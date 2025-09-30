@@ -1,9 +1,9 @@
 package com.fnndev.pocky.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -32,6 +32,30 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F),
     */
 )
+
+private val PockyColorScheme = lightColorScheme(
+    primary = GreenPrimary,
+    onPrimary = BackgroundWhite,
+    primaryContainer = GreenDark,
+    onPrimaryContainer = BackgroundWhite,
+
+    background = BackgroundGray,
+    onBackground = TextPrimary,
+    surface = SurfaceWhite,
+    onSurface = TextPrimary,
+
+    error = ExpenseRed, // برای پرداخت
+    secondary = IncomeGreen // برای دریافت
+)
+
+@Composable
+fun CustomPockyTheme(content: @Composable () -> Unit) {
+    MaterialTheme(
+        colorScheme = PockyColorScheme,
+        typography = Typography(),
+        content = content
+    )
+}
 
 @Composable
 fun PockyTheme(
