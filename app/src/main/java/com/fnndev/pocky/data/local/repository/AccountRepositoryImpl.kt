@@ -4,6 +4,7 @@ import com.fnndev.pocky.data.local.database.dao.BankAccountDao
 import com.fnndev.pocky.data.local.database.dao.TransactionDao
 import com.fnndev.pocky.data.local.models.BankAccount
 import com.fnndev.pocky.data.local.models.Transaction
+import com.fnndev.pocky.data.local.models.TransactionType
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -15,7 +16,7 @@ class AccountRepositoryImpl @Inject constructor(
         return bankAccountDao.getAllBankAccounts()
     }
 
-    override fun getBankById(id: Int): Flow<BankAccount?> {
+    override suspend fun getBankById(id: Int): BankAccount{
         return bankAccountDao.getBankAccountById(id)
     }
 
@@ -35,7 +36,7 @@ class AccountRepositoryImpl @Inject constructor(
         return transactionDao.getAllTransactions()
     }
 
-    override fun getTransactionById(id: Int): Flow<Transaction?> {
+    override suspend fun getTransactionById(id: Int): Transaction{
         return transactionDao.getTransactionById(id)
     }
 
@@ -49,5 +50,11 @@ class AccountRepositoryImpl @Inject constructor(
 
     override suspend fun insertTransaction(transaction: Transaction) {
         transactionDao.insertTransaction(transaction)
+        val account = bankAccountDao.getBankAccountById(transaction.bankAccountId)
+        val newBalance = when (transaction.type) {
+            TransactionType.INCOME -> account.balance + transaction.amount
+            TransactionType.EXPENSE -> account.balance - transaction.amount
+        }
+        bankAccountDao.updateBankAccount(account.copy(id = account.id, balance = newBalance))
     }
 }

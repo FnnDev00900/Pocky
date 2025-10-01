@@ -15,7 +15,7 @@ interface BankAccountDao {
     fun getAllBankAccounts(): Flow<List<BankAccount>>
 
     @Query("SELECT * FROM bank_accounts WHERE id = :id")
-    fun getBankAccountById(id: Int): Flow<BankAccount?>
+    suspend fun getBankAccountById(id: Int): BankAccount
 
     @Update
     suspend fun updateBankAccount(bankAccount: BankAccount)

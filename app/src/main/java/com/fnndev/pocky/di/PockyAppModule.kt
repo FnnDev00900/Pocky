@@ -26,7 +26,12 @@ object PockyAppModule {
 
     @Provides
     @Singleton
+    fun provideBankAccountDao(db: AccountDatabase) = db.bankAccountDao
+
+    @Provides
+    @Singleton
     fun provideAccountRepository(db: AccountDatabase): AccountRepository {
         return AccountRepositoryImpl(db.bankAccountDao, db.transactionDao)
     }
+
 }
