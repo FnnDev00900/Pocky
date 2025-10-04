@@ -1,2 +1,76 @@
 package com.fnndev.pocky.ui.screens.bank_add_edit
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.fnndev.pocky.ui.theme.ExpenseRed
+import com.fnndev.pocky.ui.theme.VazirFont
+import com.fnndev.pocky.ui.viewmodel.bank_account.BankAddEditViewModel
+
+@Composable
+fun BankAddEditScreen(
+    viewModel: BankAddEditViewModel = hiltViewModel(),
+    onBankSaved: () -> Unit
+) {
+    val state = viewModel.addEditState.collectAsState()
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = if (state.value.id == null) "افزودن بانک" else "ویرایش بانک",
+            fontFamily = VazirFont
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+
+        OutlinedTextField(
+            value = state.value.name,
+            onValueChange = { viewModel.onEvent(BankAddEditUiEvent.OnNameChange(it)) },
+            label = {
+                Text(text = "نام بانک", fontFamily = VazirFont)
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        OutlinedTextField(
+            value = state.value.balance,
+            onValueChange = { viewModel.onEvent(BankAddEditUiEvent.OnBalanceChange(it)) },
+            label = {
+                Text(text = "موجودی", fontFamily = VazirFont)
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Button(onClick = {
+            viewModel.onEvent(BankAddEditUiEvent.OnSaveClicked)
+        }, modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = if (state.value.id == null) "ثبت بانک" else "ویرایش بانک",
+                fontFamily = VazirFont
+            )
+        }
+
+        if (state.value.error != null) {
+            Text(text = state.value.error!!, fontFamily = VazirFont, color = ExpenseRed)
+        }
+
+        if (state.value.isSuccess){
+            LaunchedEffect(key1 = Unit) {onBankSaved()}
+        }
+    }
+}
