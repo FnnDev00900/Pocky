@@ -24,9 +24,6 @@ class BankAccountViewModel @Inject constructor(private val repository: AccountRe
     private val _accountUiState = MutableStateFlow(AccountUiState())
     val accountUiState: StateFlow<AccountUiState> = _accountUiState.asStateFlow()
 
-    private val _uiEvent = Channel<AccountUiEvent>()
-    val uiEvent = _uiEvent.receiveAsFlow()
-
     init {
         observeAccounts()
     }
@@ -40,6 +37,7 @@ class BankAccountViewModel @Inject constructor(private val repository: AccountRe
                     _accountUiState.update { state ->
                         state.copy(
                             bankAccounts = accountList,
+                            filteredBankList = accountList,
                             isLoading = false
                         )
                     }
@@ -47,22 +45,14 @@ class BankAccountViewModel @Inject constructor(private val repository: AccountRe
         }
     }
 
-    fun onEvent(event: AccountUiEvent) {
-        when (event) {
-            AccountUiEvent.NavigateToBankAddEditScreen -> {
-                sendUiEvent(AccountUiEvent.NavigateToBankAddEditScreen)
-            }
-
-            is AccountUiEvent.ShowSnackBar -> {
-                sendUiEvent(AccountUiEvent.ShowSnackBar(event.message, event.actionLabel))
-            }
+    fun onSearchQueryChanged(query: String) {
+        val filtered = _accountUiState.value.bankAccounts.filter {
+            it.name.contains(query.trim(), ignoreCase = true)
         }
-    }
-
-    private fun sendUiEvent(event: AccountUiEvent) {
-        viewModelScope.launch {
-            _uiEvent.send(event)
-        }
+        _accountUiState.value = _accountUiState.value.copy(
+            searchQuery = query,
+            filteredBankList = filtered
+        )
     }
 
     fun selectAccount(accountId: Int) {

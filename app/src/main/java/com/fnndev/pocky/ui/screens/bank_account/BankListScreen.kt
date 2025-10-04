@@ -14,12 +14,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -68,7 +67,18 @@ fun BankListScreen(
                         .fillMaxSize()
                         .padding(paddingValues)
                 ) {
-                    items(uiState.bankAccounts) {
+                    item {
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            value = uiState.searchQuery,
+                            onValueChange = viewModel::onSearchQueryChanged,
+                            label = { Text("جست‌وجوی حساب") }
+                        )
+                    }
+
+                    items(uiState.filteredBankList) {
                         BankItem(
                             bank = it,
                             onClick = {
