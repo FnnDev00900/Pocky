@@ -1,5 +1,6 @@
 package com.fnndev.pocky.ui.viewmodel.bank_account
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.fnndev.pocky.data.local.repository.AccountRepository
 import com.fnndev.pocky.ui.screens.bank_add_edit.BankAddEditState
 import com.fnndev.pocky.ui.screens.bank_add_edit.BankAddEditUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +26,7 @@ class BankAddEditViewModel @Inject constructor(
 
     init {
         val bankId = savedStateHandle.get<Int>("bankId")
+        Log.d("Fnn00900", "id:$bankId ")
         if (bankId != -1 && bankId != null) {
             loadBank(bankId)
         }
@@ -74,12 +77,12 @@ class BankAddEditViewModel @Inject constructor(
             return
         }
 
-        if (_addEditState.value.id == 0) {
-            viewModelScope.launch {
-                repository.insertBank(bank = BankAccount(id = 0, name = name, balance = balance))
+        if (_addEditState.value.id == -1 || _addEditState.value.id == null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.insertBank(bank = BankAccount(name = name, balance = balance))
             }
         } else {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 repository.updateBank(
                     bank = BankAccount(
                         id = _addEditState.value.id!!,

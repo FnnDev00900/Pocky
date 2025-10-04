@@ -15,9 +15,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -27,12 +29,18 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.fnndev.pocky.data.local.models.BankAccount
+import com.fnndev.pocky.navigation.ScreenRoute
 import com.fnndev.pocky.ui.theme.VazirFont
 import com.fnndev.pocky.ui.viewmodel.bank_account.BankAccountViewModel
 
 @Composable
-fun BankListScreen(viewModel: BankAccountViewModel = hiltViewModel()) {
+fun BankListScreen(
+    navController: NavController,
+    viewModel: BankAccountViewModel = hiltViewModel()
+
+) {
     val uiState by viewModel.accountUiState.collectAsState()
 
     when {
@@ -48,19 +56,26 @@ fun BankListScreen(viewModel: BankAccountViewModel = hiltViewModel()) {
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
                 floatingActionButton = {
-                    FloatingActionButton(onClick = {}) {
+                    FloatingActionButton(onClick = {
+                        navController.navigate(ScreenRoute.AddEditBankScreen.route + "/-1")
+                    }) {
                         Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
                     }
                 }
             ) { paddingValues ->
-                LazyColumn(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
                     items(uiState.bankAccounts) {
                         BankItem(
                             bank = it,
-                            isSelected = it.id == uiState.selectedBankAccountId,
-                            onClick = { viewModel.selectAccount(it.id) })
+                            onClick = {
+                                viewModel.selectAccount(it.id)
+                                navController.navigate(ScreenRoute.AddEditBankScreen.route + "/${it.id}")
+                            }
+                        )
                     }
                 }
             }
@@ -70,14 +85,15 @@ fun BankListScreen(viewModel: BankAccountViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun BankItem(bank: BankAccount, isSelected: Boolean, onClick: () -> Unit) {
+fun BankItem(bank: BankAccount, onClick: () -> Unit) {
     CompositionLocalProvider(value = LocalLayoutDirection provides LayoutDirection.Rtl) {
         Card(
-            modifier = Modifier.fillMaxWidth(0.95f),
-            elevation = CardDefaults.cardElevation(4.dp)
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+            elevation = CardDefaults.cardElevation(4.dp),
+            onClick = onClick
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(0.95f),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {

@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.navigation.compose.rememberNavController
+import com.fnndev.pocky.navigation.SetupNavGraph
 import com.fnndev.pocky.ui.screens.bank_account.BankListScreen
 import com.fnndev.pocky.ui.theme.CustomPockyTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,7 +17,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CustomPockyTheme {
-                BankListScreen()
+                val navController = rememberNavController()
+                SetupNavGraph(navController = navController)
             }
         }
     }

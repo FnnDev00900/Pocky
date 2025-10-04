@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "bank_accounts")
 data class BankAccount(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
     val name: String,
     val balance: Double = 0.0,
 )
