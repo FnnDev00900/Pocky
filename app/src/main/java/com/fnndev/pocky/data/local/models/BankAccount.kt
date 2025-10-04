@@ -8,6 +8,6 @@ data class BankAccount(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val name: String,
-    val balance: Double,
+    val balance: Double = 0.0,
 )
 

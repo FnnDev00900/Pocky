@@ -3,6 +3,7 @@ package com.fnndev.pocky.ui.viewmodel.bank_account
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fnndev.pocky.data.local.repository.AccountRepository
+import com.fnndev.pocky.ui.screens.bank_account.AccountUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

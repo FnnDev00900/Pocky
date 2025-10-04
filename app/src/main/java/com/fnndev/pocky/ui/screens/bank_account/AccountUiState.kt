@@ -1,4 +1,4 @@
-package com.fnndev.pocky.ui.viewmodel.bank_account
+package com.fnndev.pocky.ui.screens.bank_account
 
 import com.fnndev.pocky.data.local.models.BankAccount
 
