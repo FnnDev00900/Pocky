@@ -1,6 +1,7 @@
 package com.fnndev.pocky.ui.screens.bank_account
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,11 +10,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -82,8 +85,10 @@ fun BankListScreen(
                         BankItem(
                             bank = it,
                             onClick = {
-                                viewModel.selectAccount(it.id)
                                 navController.navigate(ScreenRoute.AddEditBankScreen.route + "/${it.id}")
+                            },
+                            onDelete = {
+                                viewModel.deleteBankAccount(it)
                             }
                         )
                     }
@@ -95,20 +100,42 @@ fun BankListScreen(
 }
 
 @Composable
-fun BankItem(bank: BankAccount, onClick: () -> Unit) {
+fun BankItem(bank: BankAccount, onClick: () -> Unit, onDelete: () -> Unit) {
     CompositionLocalProvider(value = LocalLayoutDirection provides LayoutDirection.Rtl) {
         Card(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
             elevation = CardDefaults.cardElevation(4.dp),
             onClick = onClick
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = bank.name, fontFamily = VazirFont, fontSize = 24.sp)
-                Text(text = bank.balance.toString(), fontFamily = VazirFont, fontSize = 24.sp)
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 4.dp)) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = bank.name, fontFamily = VazirFont, fontSize = 24.sp)
+                    Text(text = bank.balance.toString(), fontFamily = VazirFont, fontSize = 24.sp)
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    IconButton(onClick = onDelete) {
+                        Icon(
+                            imageVector = Icons.Default.DeleteForever,
+                            contentDescription = "Delete"
+                        )
+                    }
+                }
             }
         }
     }
