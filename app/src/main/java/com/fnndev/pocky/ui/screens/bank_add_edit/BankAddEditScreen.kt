@@ -24,7 +24,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -50,7 +49,10 @@ fun BankAddEditScreen(
 
     CompositionLocalProvider(value = LocalLayoutDirection provides LayoutDirection.Rtl) {
         Column(
-            modifier = Modifier.fillMaxSize().imePadding().navigationBarsPadding(),
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding()
+                .navigationBarsPadding(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

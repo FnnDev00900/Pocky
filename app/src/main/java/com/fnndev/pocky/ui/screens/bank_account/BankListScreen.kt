@@ -1,16 +1,20 @@
 package com.fnndev.pocky.ui.screens.bank_account
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -33,12 +37,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.fnndev.pocky.R
 import com.fnndev.pocky.data.local.models.BankAccount
 import com.fnndev.pocky.navigation.ScreenRoute
 import com.fnndev.pocky.ui.theme.VazirFont
@@ -55,6 +66,14 @@ fun BankListScreen(
     val uiState by viewModel.accountUiState.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
     val scopeSnackBar = rememberCoroutineScope()
+
+    val lotteComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.bank_list))
+    val lotteProgress by animateLottieCompositionAsState(
+        composition = lotteComposition,
+        iterations = LottieConstants.IterateForever
+    )
+
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(true) {
         viewModel.uiEvent.collect { event ->
@@ -92,7 +111,13 @@ fun BankListScreen(
 
         else -> {
             Scaffold(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(
+                        onClick = { focusManager.clearFocus() },
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ),
                 floatingActionButton = {
                     FloatingActionButton(onClick = {
                         navController.navigate(ScreenRoute.AddEditBankScreen.route + "/-1")
@@ -103,36 +128,78 @@ fun BankListScreen(
                     SnackbarHost(hostState = snackBarHostState)
                 }
             ) { paddingValues ->
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                ) {
-                    item {
-                        OutlinedTextField(
+                CompositionLocalProvider(value = LocalLayoutDirection provides LayoutDirection.Rtl) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                            value = uiState.searchQuery,
-                            onValueChange = viewModel::onSearchQueryChanged,
-                            label = { Text("جست‌وجوی حساب") }
-                        )
-                    }
-
-                    items(uiState.filteredBankList) {
-                        BankItem(
-                            bank = it,
-                            onClick = {
-                                viewModel.onEvent(BankAccountUiEvent.BankAccountSelected(it))
-                            },
-                            onDelete = {
-                                viewModel.onEvent(BankAccountUiEvent.DeleteBankAccount(it))
+                                .padding(horizontal = 2.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                                value = uiState.searchQuery,
+                                onValueChange = viewModel::onSearchQueryChanged,
+                                label = { Text("جست‌وجوی حساب") },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Search,
+                                        contentDescription = "Search"
+                                    )
+                                }
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 2.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            LottieAnimation(
+                                composition = lotteComposition,
+                                progress = { lotteProgress },
+                                modifier = Modifier.size(300.dp)
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Text(text = "لیست حساب ها", fontSize = 22.sp, fontFamily = VazirFont)
+                        }
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(2.dp)
+                        ) {
+                            items(uiState.filteredBankList) {
+                                BankItem(
+                                    bank = it,
+                                    onClick = {
+                                        viewModel.onEvent(BankAccountUiEvent.BankAccountSelected(it))
+                                    },
+                                    onDelete = {
+                                        viewModel.onEvent(BankAccountUiEvent.DeleteBankAccount(it))
+                                    }
+                                )
                             }
-                        )
+                        }
                     }
                 }
             }
-
         }
     }
 }
