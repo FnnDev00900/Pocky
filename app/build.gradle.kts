@@ -78,4 +78,5 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.navigation.compose)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.lottie.compose)
 }

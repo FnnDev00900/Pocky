@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -21,6 +24,13 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.fnndev.pocky.R
 import com.fnndev.pocky.ui.theme.ExpenseRed
 import com.fnndev.pocky.ui.theme.VazirFont
 import com.fnndev.pocky.ui.viewmodel.bank_account.BankAddEditViewModel
@@ -30,14 +40,26 @@ fun BankAddEditScreen(
     viewModel: BankAddEditViewModel = hiltViewModel(),
     onBankSaved: () -> Unit
 ) {
+    val lotteComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.payment))
+    val lotteProgress by animateLottieCompositionAsState(
+        composition = lotteComposition,
+        iterations = LottieConstants.IterateForever
+    )
+
     val state by viewModel.addEditState.collectAsState()
 
     CompositionLocalProvider(value = LocalLayoutDirection provides LayoutDirection.Rtl) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().imePadding().navigationBarsPadding(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            LottieAnimation(
+                composition = lotteComposition,
+                progress = { lotteProgress },
+                modifier = Modifier.size(300.dp)
+            )
+
             Text(
                 text = if (state.id == null) "افزودن بانک" else "ویرایش بانک",
                 fontFamily = VazirFont
