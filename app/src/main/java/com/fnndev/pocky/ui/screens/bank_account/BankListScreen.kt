@@ -1,8 +1,10 @@
 package com.fnndev.pocky.ui.screens.bank_account
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,21 +15,23 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
@@ -52,18 +57,22 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.fnndev.pocky.R
 import com.fnndev.pocky.data.local.models.BankAccount
 import com.fnndev.pocky.navigation.ScreenRoute
+import com.fnndev.pocky.ui.theme.ExpenseRed
+import com.fnndev.pocky.ui.theme.SurfaceWhite
 import com.fnndev.pocky.ui.theme.VazirFont
 import com.fnndev.pocky.ui.utils.UiEvent
 import com.fnndev.pocky.ui.viewmodel.bank_account.BankAccountViewModel
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @Composable
 fun BankListScreen(
     navController: NavController,
     viewModel: BankAccountViewModel = hiltViewModel()
-
 ) {
     val uiState by viewModel.accountUiState.collectAsState()
+    val bankList = uiState.filteredBankList
+
     val snackBarHostState = remember { SnackbarHostState() }
     val scopeSnackBar = rememberCoroutineScope()
 
@@ -92,10 +101,8 @@ fun BankListScreen(
                         }
                     }
                 }
-
                 else -> Unit
             }
-
         }
     }
 
@@ -185,14 +192,47 @@ fun BankListScreen(
                                 .fillMaxSize()
                                 .padding(2.dp)
                         ) {
-                            items(uiState.filteredBankList) {
-                                BankItem(
-                                    bank = it,
-                                    onClick = {
-                                        viewModel.onEvent(BankAccountUiEvent.BankAccountSelected(it))
+                            items(bankList, key = {it.id}) { bank ->
+                                val dismissState = rememberSwipeToDismissBoxState(
+                                    confirmValueChange = { value ->
+                                        if (value == SwipeToDismissBoxValue.EndToStart) {
+                                            viewModel.onEvent(BankAccountUiEvent.DeleteBankAccount(bank))
+                                            true
+                                        } else {
+                                            false
+                                        }
+                                    }
+                                )
+                                SwipeToDismissBox(
+                                    state = dismissState,
+                                    enableDismissFromStartToEnd = false,
+                                    enableDismissFromEndToStart = true,
+                                    backgroundContent = {
+                                        val color = if (dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart)
+                                            ExpenseRed else Color.Transparent
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .background(color)
+                                                .padding(horizontal = 24.dp),
+                                            contentAlignment = Alignment.CenterEnd
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Delete,
+                                                contentDescription = "Delete",
+                                                tint = SurfaceWhite
+                                            )
+                                        }
                                     },
-                                    onDelete = {
-                                        viewModel.onEvent(BankAccountUiEvent.DeleteBankAccount(it))
+                                    content = {
+                                        BankItem(
+                                            bank = bank,
+                                            onClick = {
+                                                viewModel.onEvent(
+                                                    BankAccountUiEvent.BankAccountSelected(bank)
+                                                )
+                                            }
+                                        )
                                     }
                                 )
                             }
@@ -205,7 +245,7 @@ fun BankListScreen(
 }
 
 @Composable
-fun BankItem(bank: BankAccount, onClick: () -> Unit, onDelete: () -> Unit) {
+fun BankItem(bank: BankAccount, onClick: () -> Unit) {
     CompositionLocalProvider(value = LocalLayoutDirection provides LayoutDirection.Rtl) {
         Card(
             modifier = Modifier
@@ -228,20 +268,6 @@ fun BankItem(bank: BankAccount, onClick: () -> Unit, onDelete: () -> Unit) {
                 ) {
                     Text(text = bank.name, fontFamily = VazirFont, fontSize = 24.sp)
                     Text(text = bank.balance.toString(), fontFamily = VazirFont, fontSize = 24.sp)
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    IconButton(onClick = onDelete) {
-                        Icon(
-                            imageVector = Icons.Default.DeleteForever,
-                            contentDescription = "Delete"
-                        )
-                    }
                 }
             }
         }

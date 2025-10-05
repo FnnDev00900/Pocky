@@ -76,7 +76,6 @@ class BankAccountViewModel @Inject constructor(private val repository: AccountRe
                                 action = "بازگردانی"
                             )
                         )
-                        observeAccounts()
                     } catch (e: Exception) {
                         _accountUiState.value = _accountUiState.value.copy(error = e.message)
                     }
@@ -100,7 +99,6 @@ class BankAccountViewModel @Inject constructor(private val repository: AccountRe
                 deletedBankAccount?.let { bank ->
                     viewModelScope.launch {
                         repository.insertBank(bank)
-                        observeAccounts()
                     }
                 }
             }
