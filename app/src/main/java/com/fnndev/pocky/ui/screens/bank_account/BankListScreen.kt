@@ -19,11 +19,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -35,7 +42,9 @@ import androidx.navigation.NavController
 import com.fnndev.pocky.data.local.models.BankAccount
 import com.fnndev.pocky.navigation.ScreenRoute
 import com.fnndev.pocky.ui.theme.VazirFont
+import com.fnndev.pocky.ui.utils.UiEvent
 import com.fnndev.pocky.ui.viewmodel.bank_account.BankAccountViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun BankListScreen(
@@ -44,6 +53,33 @@ fun BankListScreen(
 
 ) {
     val uiState by viewModel.accountUiState.collectAsState()
+    val snackBarHostState = remember { SnackbarHostState() }
+    val scopeSnackBar = rememberCoroutineScope()
+
+    LaunchedEffect(true) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UiEvent.Navigate -> navController.navigate(event.route)
+                is UiEvent.ShowSnackBar -> {
+                    scopeSnackBar.launch {
+                        snackBarHostState.currentSnackbarData?.dismiss()
+                        val result = snackBarHostState.showSnackbar(
+                            message = event.message,
+                            actionLabel = event.action,
+                            duration = SnackbarDuration.Short
+                        )
+                        if (result == SnackbarResult.ActionPerformed) {
+                            viewModel.onEvent(BankAccountUiEvent.OnUndoDeleteClick)
+                        }
+                    }
+                }
+
+                else -> Unit
+            }
+
+        }
+    }
+
 
     when {
         uiState.isLoading -> {
@@ -63,6 +99,8 @@ fun BankListScreen(
                     }) {
                         Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
                     }
+                }, snackbarHost = {
+                    SnackbarHost(hostState = snackBarHostState)
                 }
             ) { paddingValues ->
                 LazyColumn(
@@ -85,10 +123,10 @@ fun BankListScreen(
                         BankItem(
                             bank = it,
                             onClick = {
-                                navController.navigate(ScreenRoute.AddEditBankScreen.route + "/${it.id}")
+                                viewModel.onEvent(BankAccountUiEvent.BankAccountSelected(it))
                             },
                             onDelete = {
-                                viewModel.deleteBankAccount(it)
+                                viewModel.onEvent(BankAccountUiEvent.DeleteBankAccount(it))
                             }
                         )
                     }
@@ -109,9 +147,11 @@ fun BankItem(bank: BankAccount, onClick: () -> Unit, onDelete: () -> Unit) {
             elevation = CardDefaults.cardElevation(4.dp),
             onClick = onClick
         ) {
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp)
+            ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
