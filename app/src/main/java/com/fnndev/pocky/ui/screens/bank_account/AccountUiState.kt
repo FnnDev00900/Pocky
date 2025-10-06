@@ -5,7 +5,6 @@ import com.fnndev.pocky.data.local.models.BankAccount
 data class AccountUiState(
     val bankAccounts: List<BankAccount> = emptyList(),
     val filteredBankList: List<BankAccount> = emptyList(),
-    val swipeToggle: Boolean = false,
     val searchQuery: String = "",
     val selectedBankAccountId: Int? = null,
     val isLoading: Boolean = false,

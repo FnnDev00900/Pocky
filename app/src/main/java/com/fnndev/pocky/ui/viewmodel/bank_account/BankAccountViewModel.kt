@@ -1,7 +1,5 @@
 package com.fnndev.pocky.ui.viewmodel.bank_account
 
-import androidx.compose.material3.SwipeToDismissBoxValue
-import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fnndev.pocky.data.local.models.BankAccount
@@ -79,7 +77,6 @@ class BankAccountViewModel @Inject constructor(private val repository: AccountRe
                                 action = "بازگردانی"
                             )
                         )
-                        handleSwipeState()
                     } catch (e: Exception) {
                         _accountUiState.value = _accountUiState.value.copy(error = e.message)
                     }
@@ -104,17 +101,10 @@ class BankAccountViewModel @Inject constructor(private val repository: AccountRe
                     viewModelScope.launch {
                         repository.insertBank(bank)
                         deletedBankAccount = null
-                        handleSwipeState()
                     }
                 }
             }
         }
-    }
-
-    private fun handleSwipeState(){
-        _accountUiState.value = _accountUiState.value.copy(
-            swipeToggle = !_accountUiState.value.swipeToggle
-        )
     }
 
     private fun sendUiEvent(event: UiEvent) {
