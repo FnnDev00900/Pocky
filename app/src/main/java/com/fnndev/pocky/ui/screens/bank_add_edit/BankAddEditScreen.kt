@@ -1,5 +1,6 @@
 package com.fnndev.pocky.ui.screens.bank_add_edit
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -21,6 +23,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -33,6 +38,8 @@ import com.fnndev.pocky.R
 import com.fnndev.pocky.ui.theme.ExpenseRed
 import com.fnndev.pocky.ui.theme.VazirFont
 import com.fnndev.pocky.ui.viewmodel.bank_account.BankAddEditViewModel
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun BankAddEditScreen(
@@ -79,15 +86,24 @@ fun BankAddEditScreen(
                     .padding(horizontal = 16.dp)
             )
             Spacer(modifier = Modifier.height(12.dp))
+
             OutlinedTextField(
-                value = state.balance,
-                onValueChange = { viewModel.onEvent(BankAddEditUiEvent.OnBalanceChange(it)) },
+                value = TextFieldValue(
+                    text = NumberFormat.getNumberInstance(Locale.US).format(state.balance.toLongOrNull() ?: 0),
+                    selection = TextRange(NumberFormat.getNumberInstance(Locale.US).format(state.balance.toLongOrNull() ?: 0).length)
+                ),
+                onValueChange = {input ->
+                    val digits = input.text.filter { it.isDigit() }
+                    Log.d("00900", "BankAddEditScreen: ValueChange $input")
+                    viewModel.onEvent(BankAddEditUiEvent.OnBalanceChange(digits))
+                },
                 label = {
                     Text(text = "موجودی", fontFamily = VazirFont)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 16.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
             )
 
             Button(

@@ -9,7 +9,7 @@ data class Transaction(
     val id: Int = 0,
     val bankAccountId: Int,
     val date: String,
-    val amount: Double,
+    val amount: Long,
     val description: String,
     val type: TransactionType
 )

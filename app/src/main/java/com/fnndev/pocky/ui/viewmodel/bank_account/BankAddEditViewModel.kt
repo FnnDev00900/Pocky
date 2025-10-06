@@ -26,7 +26,6 @@ class BankAddEditViewModel @Inject constructor(
 
     init {
         val bankId = savedStateHandle.get<Int>("bankId")
-        Log.d("Fnn00900", "id:$bankId ")
         if (bankId != -1 && bankId != null) {
             loadBank(bankId)
         }
@@ -78,7 +77,7 @@ class BankAddEditViewModel @Inject constructor(
 
         if (_addEditState.value.id == -1 || _addEditState.value.id == null) {
             viewModelScope.launch(Dispatchers.IO) {
-                repository.insertBank(bank = BankAccount(name = name, balance = balance))
+                repository.insertBank(bank = BankAccount(name = name, balance = balance.toLong()))
             }
         } else {
             viewModelScope.launch(Dispatchers.IO) {
@@ -86,7 +85,7 @@ class BankAddEditViewModel @Inject constructor(
                     bank = BankAccount(
                         id = _addEditState.value.id!!,
                         name = name,
-                        balance = balance
+                        balance = balance.toLong()
                     )
                 )
             }

@@ -66,10 +66,12 @@ import com.fnndev.pocky.data.local.models.BankAccount
 import com.fnndev.pocky.navigation.ScreenRoute
 import com.fnndev.pocky.ui.theme.ExpenseRed
 import com.fnndev.pocky.ui.theme.SurfaceWhite
+import com.fnndev.pocky.ui.theme.TextSecondary
 import com.fnndev.pocky.ui.theme.VazirFont
 import com.fnndev.pocky.ui.utils.UiEvent
 import com.fnndev.pocky.ui.viewmodel.bank_account.BankAccountViewModel
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
@@ -115,7 +117,9 @@ fun BankListScreen(
 
     when {
         uiState.isLoading -> {
-            CircularProgressIndicator()
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
         }
 
         uiState.error != null -> {
@@ -239,7 +243,7 @@ fun BankItem(bank: BankAccount, onClick: () -> Unit, onDelete: () -> Unit) {
                     }
                 },
                 dismissButton = {
-                    TextButton(onClick = {showDialog = false}) {
+                    TextButton(onClick = { showDialog = false }) {
                         Text(text = "نه", fontFamily = VazirFont)
                     }
                 },
@@ -259,7 +263,8 @@ fun BankItem(bank: BankAccount, onClick: () -> Unit, onDelete: () -> Unit) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 4.dp),
             elevation = CardDefaults.cardElevation(4.dp),
-            onClick = onClick
+            onClick = onClick,
+            colors = CardDefaults.cardColors(SurfaceWhite)
         ) {
             Column(
                 modifier = Modifier
@@ -281,14 +286,14 @@ fun BankItem(bank: BankAccount, onClick: () -> Unit, onDelete: () -> Unit) {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.Start
                     ) {
-                        Text(text = "حساب:" + bank.name, fontFamily = VazirFont, fontSize = 24.sp)
+                        Text(text = "حساب:" + bank.name, fontFamily = VazirFont, fontSize = 20.sp)
                         Text(
-                            text = "موجودی:" + bank.balance.toString(),
+                            text = "موجودی:" + NumberFormat.getInstance().format(bank.balance) + "ريال",
                             fontFamily = VazirFont,
-                            fontSize = 24.sp
+                            fontSize = 18.sp,
+                            color = TextSecondary
                         )
                     }
-
 
                     Icon(
                         imageVector = Icons.Default.Delete,
@@ -298,7 +303,6 @@ fun BankItem(bank: BankAccount, onClick: () -> Unit, onDelete: () -> Unit) {
                             .clickable(onClick = { showDialog = true })
                     )
                 }
-
             }
         }
     }
