@@ -8,5 +8,5 @@ sealed class BankAccountUiEvent {
     data class BankAccountSelected(val bankAccount: BankAccount) : BankAccountUiEvent()
     object ObserveAccounts : BankAccountUiEvent()
     object AddNewBankAccountClicked : BankAccountUiEvent()
-    object OnUndoDeleteClick: BankAccountUiEvent()
+    object OnUndoDeleteClick : BankAccountUiEvent()
 }

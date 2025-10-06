@@ -1,5 +1,7 @@
 package com.fnndev.pocky.ui.screens.bank_account
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -17,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -31,14 +34,18 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -62,9 +69,9 @@ import com.fnndev.pocky.ui.theme.SurfaceWhite
 import com.fnndev.pocky.ui.theme.VazirFont
 import com.fnndev.pocky.ui.utils.UiEvent
 import com.fnndev.pocky.ui.viewmodel.bank_account.BankAccountViewModel
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun BankListScreen(
     navController: NavController,
@@ -101,7 +108,6 @@ fun BankListScreen(
                         }
                     }
                 }
-                else -> Unit
             }
         }
     }
@@ -192,47 +198,18 @@ fun BankListScreen(
                                 .fillMaxSize()
                                 .padding(2.dp)
                         ) {
-                            items(bankList, key = {it.id}) { bank ->
-                                val dismissState = rememberSwipeToDismissBoxState(
-                                    confirmValueChange = { value ->
-                                        if (value == SwipeToDismissBoxValue.EndToStart) {
-                                            viewModel.onEvent(BankAccountUiEvent.DeleteBankAccount(bank))
-                                            true
-                                        } else {
-                                            false
-                                        }
-                                    }
-                                )
-                                SwipeToDismissBox(
-                                    state = dismissState,
-                                    enableDismissFromStartToEnd = false,
-                                    enableDismissFromEndToStart = true,
-                                    backgroundContent = {
-                                        val color = if (dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart)
-                                            ExpenseRed else Color.Transparent
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .background(color)
-                                                .padding(horizontal = 24.dp),
-                                            contentAlignment = Alignment.CenterEnd
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Default.Delete,
-                                                contentDescription = "Delete",
-                                                tint = SurfaceWhite
+                            items(bankList) { bank ->
+                                BankItem(
+                                    bank = bank,
+                                    onClick = {
+                                        viewModel.onEvent(
+                                            BankAccountUiEvent.BankAccountSelected(
+                                                bank
                                             )
-                                        }
-                                    },
-                                    content = {
-                                        BankItem(
-                                            bank = bank,
-                                            onClick = {
-                                                viewModel.onEvent(
-                                                    BankAccountUiEvent.BankAccountSelected(bank)
-                                                )
-                                            }
                                         )
+                                    },
+                                    onDelete = {
+                                        viewModel.onEvent(BankAccountUiEvent.DeleteBankAccount(bank))
                                     }
                                 )
                             }
@@ -245,7 +222,37 @@ fun BankListScreen(
 }
 
 @Composable
-fun BankItem(bank: BankAccount, onClick: () -> Unit) {
+fun BankItem(bank: BankAccount, onClick: () -> Unit, onDelete: () -> Unit) {
+    var showDialog by remember { mutableStateOf(false) }
+    if (showDialog) {
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            onDelete()
+                            showDialog = false
+                        }
+                    ) {
+                        Text(text = "آره", fontFamily = VazirFont, color = ExpenseRed)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {showDialog = false}) {
+                        Text(text = "نه", fontFamily = VazirFont)
+                    }
+                },
+                title = {
+                    Text(text = "حذف حساب", fontFamily = VazirFont)
+                },
+                text = {
+                    Text("آیا حساب ${bank.name} حذف شود", fontFamily = VazirFont)
+                }
+            )
+        }
+    }
+
     CompositionLocalProvider(value = LocalLayoutDirection provides LayoutDirection.Rtl) {
         Card(
             modifier = Modifier
@@ -266,10 +273,34 @@ fun BankItem(bank: BankAccount, onClick: () -> Unit) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = bank.name, fontFamily = VazirFont, fontSize = 24.sp)
-                    Text(text = bank.balance.toString(), fontFamily = VazirFont, fontSize = 24.sp)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 4.dp)
+                            .weight(0.7f),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(text = "حساب:" + bank.name, fontFamily = VazirFont, fontSize = 24.sp)
+                        Text(
+                            text = "موجودی:" + bank.balance.toString(),
+                            fontFamily = VazirFont,
+                            fontSize = 24.sp
+                        )
+                    }
+
+
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete",
+                        tint = ExpenseRed,
+                        modifier = Modifier
+                            .clickable(onClick = { showDialog = true })
+                    )
                 }
+
             }
         }
     }
 }
+

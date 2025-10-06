@@ -1,5 +1,7 @@
 package com.fnndev.pocky.ui.viewmodel.bank_account
 
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fnndev.pocky.data.local.models.BankAccount
@@ -11,6 +13,7 @@ import com.fnndev.pocky.ui.utils.UiEvent
 import com.fnndev.pocky.ui.utils.UiEvent.Navigate
 import com.fnndev.pocky.ui.utils.UiEvent.ShowSnackBar
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,7 +42,7 @@ class BankAccountViewModel @Inject constructor(private val repository: AccountRe
     }
 
     fun observeAccounts() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.getAllBanks()
                 .onStart { _accountUiState.update { state -> state.copy(isLoading = true) } }
                 .catch { exception -> _accountUiState.update { state -> state.copy(error = exception.message) } }
@@ -66,7 +69,7 @@ class BankAccountViewModel @Inject constructor(private val repository: AccountRe
             }
 
             is BankAccountUiEvent.DeleteBankAccount -> {
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     try {
                         deletedBankAccount = event.bankAccount
                         repository.deleteBank(event.bankAccount)
@@ -76,6 +79,7 @@ class BankAccountViewModel @Inject constructor(private val repository: AccountRe
                                 action = "بازگردانی"
                             )
                         )
+                        handleSwipeState()
                     } catch (e: Exception) {
                         _accountUiState.value = _accountUiState.value.copy(error = e.message)
                     }
@@ -99,10 +103,18 @@ class BankAccountViewModel @Inject constructor(private val repository: AccountRe
                 deletedBankAccount?.let { bank ->
                     viewModelScope.launch {
                         repository.insertBank(bank)
+                        deletedBankAccount = null
+                        handleSwipeState()
                     }
                 }
             }
         }
+    }
+
+    private fun handleSwipeState(){
+        _accountUiState.value = _accountUiState.value.copy(
+            swipeToggle = !_accountUiState.value.swipeToggle
+        )
     }
 
     private fun sendUiEvent(event: UiEvent) {
