@@ -12,6 +12,7 @@ interface AccountRepository {
     suspend fun insertBank(bank: BankAccount)
 
     fun getAllTransactions(): Flow<List<Transaction>>
+    fun getTransactionsByBankAccountId(bankAccountId: Int): Flow<List<Transaction>>
     suspend fun getTransactionById(id: Int): Transaction
     suspend fun updateTransaction(transaction: Transaction)
     suspend fun deleteTransaction(transaction: Transaction)

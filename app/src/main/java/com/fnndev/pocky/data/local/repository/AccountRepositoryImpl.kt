@@ -36,7 +36,11 @@ class AccountRepositoryImpl @Inject constructor(
         return transactionDao.getAllTransactions()
     }
 
-    override suspend fun getTransactionById(id: Int): Transaction{
+    override fun getTransactionsByBankAccountId(bankAccountId: Int): Flow<List<Transaction>> {
+        return transactionDao.getTransactionsByBankAccountId(bankAccountId)
+    }
+
+    override suspend fun getTransactionById(id: Int): Transaction {
         return transactionDao.getTransactionById(id)
     }
 

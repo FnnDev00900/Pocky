@@ -6,8 +6,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.fnndev.pocky.ui.screens.bank_account.BankListScreen
-import com.fnndev.pocky.ui.screens.bank_add_edit.BankAddEditScreen
+import com.fnndev.pocky.ui.screens.bank.bank_account.BankListScreen
+import com.fnndev.pocky.ui.screens.bank.bank_add_edit.BankAddEditScreen
 
 @Composable
 fun SetupNavGraph(navController: NavHostController) {
@@ -25,6 +25,18 @@ fun SetupNavGraph(navController: NavHostController) {
             )
         ) {
             BankAddEditScreen(onBankSaved = { navController.popBackStack() })
+        }
+
+        composable(
+            route = ScreenRoute.ListTransactionScreen.route + "/{bankId}",
+            arguments = listOf(
+                navArgument(name = "bankId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) {
+
         }
     }
 }

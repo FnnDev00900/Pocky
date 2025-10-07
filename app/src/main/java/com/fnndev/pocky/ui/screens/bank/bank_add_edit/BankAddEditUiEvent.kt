@@ -1,4 +1,4 @@
-package com.fnndev.pocky.ui.screens.bank_add_edit
+package com.fnndev.pocky.ui.screens.bank.bank_add_edit
 
 sealed class BankAddEditUiEvent {
     data class OnNameChange(val name: String) : BankAddEditUiEvent()

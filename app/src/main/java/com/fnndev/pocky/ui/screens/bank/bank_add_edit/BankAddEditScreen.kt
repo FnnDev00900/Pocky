@@ -1,4 +1,4 @@
-package com.fnndev.pocky.ui.screens.bank_add_edit
+package com.fnndev.pocky.ui.screens.bank.bank_add_edit
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement

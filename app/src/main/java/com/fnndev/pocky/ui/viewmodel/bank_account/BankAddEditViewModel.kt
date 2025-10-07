@@ -1,13 +1,12 @@
 package com.fnndev.pocky.ui.viewmodel.bank_account
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fnndev.pocky.data.local.models.BankAccount
 import com.fnndev.pocky.data.local.repository.AccountRepository
-import com.fnndev.pocky.ui.screens.bank_add_edit.BankAddEditState
-import com.fnndev.pocky.ui.screens.bank_add_edit.BankAddEditUiEvent
+import com.fnndev.pocky.ui.screens.bank.bank_add_edit.BankAddEditState
+import com.fnndev.pocky.ui.screens.bank.bank_add_edit.BankAddEditUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

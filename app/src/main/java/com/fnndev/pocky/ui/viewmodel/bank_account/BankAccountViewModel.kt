@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.fnndev.pocky.data.local.models.BankAccount
 import com.fnndev.pocky.data.local.repository.AccountRepository
 import com.fnndev.pocky.navigation.ScreenRoute
-import com.fnndev.pocky.ui.screens.bank_account.AccountUiState
-import com.fnndev.pocky.ui.screens.bank_account.BankAccountUiEvent
+import com.fnndev.pocky.ui.screens.bank.bank_account.AccountUiState
+import com.fnndev.pocky.ui.screens.bank.bank_account.BankAccountUiEvent
 import com.fnndev.pocky.ui.utils.UiEvent
 import com.fnndev.pocky.ui.utils.UiEvent.Navigate
 import com.fnndev.pocky.ui.utils.UiEvent.ShowSnackBar
