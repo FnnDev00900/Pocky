@@ -93,8 +93,9 @@ fun BankAddEditScreen(
                     selection = TextRange(NumberFormat.getNumberInstance(Locale.US).format(state.balance.toLongOrNull() ?: 0).length)
                 ),
                 onValueChange = {input ->
-                    val digits = input.text.filter { it.isDigit() }
-                    Log.d("00900", "BankAddEditScreen: ValueChange $input")
+                    val convertedInput = convertPersianToEnglishNumbers(input.text)
+                    val digits = convertedInput.filter { it.isDigit() }
+                    Log.d("00900", "BankAddEditScreen: ValueChange $convertedInput")
                     viewModel.onEvent(BankAddEditUiEvent.OnBalanceChange(digits))
                 },
                 label = {
@@ -128,4 +129,18 @@ fun BankAddEditScreen(
             }
         }
     }
+}
+
+private fun convertPersianToEnglishNumbers(input: String): String {
+    return input
+        .replace('۰', '0')
+        .replace('۱', '1')
+        .replace('۲', '2')
+        .replace('۳', '3')
+        .replace('۴', '4')
+        .replace('۵', '5')
+        .replace('۶', '6')
+        .replace('۷', '7')
+        .replace('۸', '8')
+        .replace('۹', '9')
 }

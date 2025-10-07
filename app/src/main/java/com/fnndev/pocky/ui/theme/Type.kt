@@ -12,6 +12,10 @@ import com.fnndev.pocky.R
 val VazirFont = FontFamily(
     Font(resId = R.font.vazir, FontWeight.Normal)
 )
+val KoodakFont = FontFamily(
+    Font(resId = R.font.koodak, FontWeight.Normal)
+)
+
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(

@@ -65,6 +65,7 @@ import com.fnndev.pocky.R
 import com.fnndev.pocky.data.local.models.BankAccount
 import com.fnndev.pocky.navigation.ScreenRoute
 import com.fnndev.pocky.ui.theme.ExpenseRed
+import com.fnndev.pocky.ui.theme.KoodakFont
 import com.fnndev.pocky.ui.theme.SurfaceWhite
 import com.fnndev.pocky.ui.theme.TextSecondary
 import com.fnndev.pocky.ui.theme.VazirFont
@@ -288,8 +289,8 @@ fun BankItem(bank: BankAccount, onClick: () -> Unit, onDelete: () -> Unit) {
                     ) {
                         Text(text = "حساب:" + bank.name, fontFamily = VazirFont, fontSize = 20.sp)
                         Text(
-                            text = "موجودی:" + NumberFormat.getInstance().format(bank.balance) + "ريال",
-                            fontFamily = VazirFont,
+                            text = "موجودی:" + NumberFormat.getInstance().format(bank.balance) + " ریال",
+                            fontFamily = KoodakFont,
                             fontSize = 18.sp,
                             color = TextSecondary
                         )
