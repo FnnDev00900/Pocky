@@ -104,6 +104,10 @@ class BankAccountViewModel @Inject constructor(private val repository: AccountRe
                     }
                 }
             }
+
+            is BankAccountUiEvent.OnReceiptClicked -> {
+                sendUiEvent(Navigate(ScreenRoute.ListTransactionScreen.route + "/${event.bankAccountId}"))
+            }
         }
     }
 

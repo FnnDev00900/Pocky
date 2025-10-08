@@ -6,6 +6,7 @@ sealed class BankAccountUiEvent {
     data class SearchQueryChange(val query: String) : BankAccountUiEvent()
     data class DeleteBankAccount(val bankAccount: BankAccount) : BankAccountUiEvent()
     data class BankAccountSelected(val bankAccount: BankAccount) : BankAccountUiEvent()
+    data class OnReceiptClicked(val bankAccountId: Int) : BankAccountUiEvent()
     object ObserveAccounts : BankAccountUiEvent()
     object AddNewBankAccountClicked : BankAccountUiEvent()
     object OnUndoDeleteClick : BankAccountUiEvent()

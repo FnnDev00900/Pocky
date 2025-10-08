@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.fnndev.pocky.ui.screens.bank.bank_account.BankListScreen
 import com.fnndev.pocky.ui.screens.bank.bank_add_edit.BankAddEditScreen
+import com.fnndev.pocky.ui.screens.transaction.transaction_list.TransactionScreen
 
 @Composable
 fun SetupNavGraph(navController: NavHostController) {
@@ -36,7 +37,7 @@ fun SetupNavGraph(navController: NavHostController) {
                 }
             )
         ) {
-
+            TransactionScreen()
         }
     }
 }

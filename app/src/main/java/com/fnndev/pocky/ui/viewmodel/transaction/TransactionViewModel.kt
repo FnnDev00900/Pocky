@@ -1,5 +1,7 @@
 package com.fnndev.pocky.ui.viewmodel.transaction
 
+import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fnndev.pocky.data.local.repository.AccountRepository
@@ -17,7 +19,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TransactionViewModel @Inject constructor(private val repository: AccountRepository) :
+class TransactionViewModel @Inject constructor(
+    private val repository: AccountRepository,
+    savedStateHandle: SavedStateHandle
+) :
     ViewModel() {
     private val _transactionState = MutableStateFlow(TransactionUiState())
     val transactionState: StateFlow<TransactionUiState> = _transactionState.asStateFlow()
@@ -26,9 +31,11 @@ class TransactionViewModel @Inject constructor(private val repository: AccountRe
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-
+        val accountId = savedStateHandle.get<Int>("bankId")
+        if (accountId != -1 && accountId != null) {
+            observeTransactionsByBankAccountId(accountId)
+        }
     }
-
     fun observeTransactionsByBankAccountId(accountId: Int) {
         viewModelScope.launch {
             repository.getTransactionsByBankAccountId(accountId)

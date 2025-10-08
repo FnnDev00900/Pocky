@@ -1,6 +1,7 @@
 package com.fnndev.pocky.ui.screens.bank.bank_account
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -209,6 +210,14 @@ fun BankListScreen(
                                     },
                                     onDelete = {
                                         viewModel.onEvent(BankAccountUiEvent.DeleteBankAccount(bank))
+                                    },
+                                    onReceipt = {
+                                        viewModel.onEvent(
+                                            BankAccountUiEvent.OnReceiptClicked(
+                                                it
+                                            )
+                                        )
+                                        Log.d("00900", "BankListScreen: Item =${it}")
                                     }
                                 )
                             }
@@ -221,7 +230,7 @@ fun BankListScreen(
 }
 
 @Composable
-fun BankItem(bank: BankAccount, onClick: () -> Unit, onDelete: () -> Unit) {
+fun BankItem(bank: BankAccount, onClick: () -> Unit, onDelete: () -> Unit, onReceipt: (bankId: Int) -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -283,7 +292,8 @@ fun BankItem(bank: BankAccount, onClick: () -> Unit, onDelete: () -> Unit) {
                     ) {
                         Text(text = "حساب:" + bank.name, fontFamily = VazirFont, fontSize = 20.sp)
                         Text(
-                            text = "موجودی:" + NumberFormat.getInstance().format(bank.balance) + " ریال",
+                            text = "موجودی:" + NumberFormat.getInstance()
+                                .format(bank.balance) + " ریال",
                             fontFamily = KoodakFont,
                             fontSize = 18.sp,
                             color = TextSecondary
@@ -306,10 +316,10 @@ fun BankItem(bank: BankAccount, onClick: () -> Unit, onDelete: () -> Unit) {
                     horizontalArrangement = Arrangement.End
                 ) {
                     OutlinedButton(
-                        onClick = {}
+                        onClick = { onReceipt(bank.id) }
                     ) {
-                        Icon(imageVector = Icons.Default.Add,"Add")
-                        Text(text="افزودن رسید", fontFamily = VazirFont)
+                        Icon(imageVector = Icons.Default.Add, "Add")
+                        Text(text = "افزودن رسید", fontFamily = VazirFont)
                     }
                 }
             }
