@@ -23,6 +23,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -296,6 +297,20 @@ fun BankItem(bank: BankAccount, onClick: () -> Unit, onDelete: () -> Unit) {
                         modifier = Modifier
                             .clickable(onClick = { showDialog = true })
                     )
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    OutlinedButton(
+                        onClick = {}
+                    ) {
+                        Icon(imageVector = Icons.Default.Add,"Add")
+                        Text(text="افزودن رسید", fontFamily = VazirFont)
+                    }
                 }
             }
         }

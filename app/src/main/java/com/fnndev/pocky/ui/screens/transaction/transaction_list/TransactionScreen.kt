@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.fnndev.pocky.data.local.models.Transaction
 import com.fnndev.pocky.data.local.models.TransactionType
-import com.fnndev.pocky.ui.theme.BackgroundGray
 import com.fnndev.pocky.ui.theme.ExpenseRed
 import com.fnndev.pocky.ui.theme.ExpenseRedLight
 import com.fnndev.pocky.ui.theme.IncomeGreen
