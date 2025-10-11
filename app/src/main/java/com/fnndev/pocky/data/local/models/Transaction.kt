@@ -14,6 +14,6 @@ data class Transaction(
     val type: TransactionType
 )
 
-enum class TransactionType {
-    INCOME, EXPENSE
+enum class TransactionType(val title: String) {
+    INCOME("دریافت"), EXPENSE("پرداخت")
 }
