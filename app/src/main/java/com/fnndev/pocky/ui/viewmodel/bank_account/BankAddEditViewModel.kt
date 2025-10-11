@@ -30,7 +30,7 @@ class BankAddEditViewModel @Inject constructor(
         }
     }
 
-    fun loadBank(bankId: Int) {
+    private fun loadBank(bankId: Int) {
         viewModelScope.launch {
             val bank = repository.getBankById(bankId)
             bank.let {
