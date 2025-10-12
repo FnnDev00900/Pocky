@@ -1,4 +1,5 @@
 package com.fnndev.pocky.ui.screens.transaction.transaction_list
 
-class TransactionEvent {
+sealed class TransactionEvent {
+    object OnAddReceiptClicked : TransactionEvent()
 }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
@@ -32,7 +33,7 @@ import com.fnndev.pocky.ui.theme.TextPrimary
 import com.fnndev.pocky.ui.viewmodel.transaction.TransactionAddEditView
 
 @Composable
-fun TransactionAddEdit(
+fun TransactionAddEditScreen(
     viewModel: TransactionAddEditView = hiltViewModel(),
     onSaveClick: () -> Unit
 ) {
@@ -55,54 +56,72 @@ fun TransactionAddEdit(
                     shape = RoundedCornerShape(24.dp),
                     border = BorderStroke(width = 1.dp, color = TextPrimary)
                 ) {
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = state.value.transactionDate,
-                        onValueChange = {
-                            viewModel.onEvent(TransactionAddEditEvent.OnDateChange(it))
-                        },
-                        label = {
-                            Text(text = "تاریخ", fontFamily = KoodakFont)
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        maxLines = 1,
-                        singleLine = true
-                    )
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = state.value.transactionAmount,
-                        onValueChange = {
-                            viewModel.onEvent(TransactionAddEditEvent.OnAmountChange(it))
-                        },
-                        label = {
-                            Text(text = "مبلغ", fontFamily = KoodakFont)
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        maxLines = 1,
-                        singleLine = true
-                    )
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = state.value.transactionDescription,
-                        onValueChange = {
-                            viewModel.onEvent(TransactionAddEditEvent.OnDescriptionChange(it))
-                        },
-                        label = {
-                            Text(text = "شرح", fontFamily = KoodakFont)
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        maxLines = 5,
-                        singleLine = false
-                    )
+                    Column(
+                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = state.value.transactionDate,
+                            onValueChange = {
+                                viewModel.onEvent(TransactionAddEditEvent.OnDateChange(it))
+                            },
+                            label = {
+                                Text(text = "تاریخ", fontFamily = KoodakFont)
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
+                                imeAction = ImeAction.Next
+                            ),
+                            maxLines = 1,
+                            singleLine = true
+                        )
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = state.value.transactionAmount,
+                            onValueChange = {
+                                viewModel.onEvent(TransactionAddEditEvent.OnAmountChange(it))
+                            },
+                            label = {
+                                Text(text = "مبلغ", fontFamily = KoodakFont)
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
+                                imeAction = ImeAction.Next
+                            ),
+                            maxLines = 1,
+                            singleLine = true
+                        )
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = state.value.transactionDescription,
+                            onValueChange = {
+                                viewModel.onEvent(TransactionAddEditEvent.OnDescriptionChange(it))
+                            },
+                            label = {
+                                Text(text = "شرح", fontFamily = KoodakFont)
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
+                                imeAction = ImeAction.Next
+                            ),
+                            maxLines = 5,
+                            singleLine = false
+                        )
+                        TransactionTypeSelector(
+                            selectedType = state.value.transactionType,
+                            onTypeSelected = {
+                                viewModel.onEvent(TransactionAddEditEvent.OnTransactionTypeChange(it))
+                            }
+                        )
+
+                        Button(onClick = {
+                            onSaveClick()
+                        }) {
+                            Text(text = "ذخیره")
+                        }
+                    }
                 }
             }
         }
