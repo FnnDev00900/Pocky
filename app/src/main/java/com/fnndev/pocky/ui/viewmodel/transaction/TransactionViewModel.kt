@@ -31,17 +31,18 @@ class TransactionViewModel @Inject constructor(
     private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
+    private var bankId = savedStateHandle.get<Int>("bankId")
+
     init {
-        val accountId = savedStateHandle.get<Int>("bankId")
-        if (accountId != -1 && accountId != null) {
-            observeTransactionsByBankAccountId(accountId)
+        if (bankId != -1 && bankId != null) {
+            observeTransactionsByBankAccountId(bankId!!)
         }
     }
 
-    fun onEvent(event: TransactionEvent){
-        when(event){
+    fun onEvent(event: TransactionEvent) {
+        when (event) {
             TransactionEvent.OnAddReceiptClicked -> {
-                sendUiEvent(UiEvent.Navigate(ScreenRoute.AddEditTransactionScreen.route))
+                sendUiEvent(UiEvent.Navigate(ScreenRoute.AddEditTransactionScreen.route + "/$bankId"))
             }
         }
     }

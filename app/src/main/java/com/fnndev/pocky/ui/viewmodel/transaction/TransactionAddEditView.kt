@@ -20,9 +20,10 @@ class TransactionAddEditView @Inject constructor(
 ) : ViewModel() {
     private val _addEditTransactionState = MutableStateFlow(TransactionAddEditState())
     val addEditTransactionState = _addEditTransactionState.asStateFlow()
-
     init {
         val transactionId = savedStateHandle.get<Int>("transactionId")
+        val bankId = savedStateHandle.get<Int>("bankId")
+        _addEditTransactionState.value = _addEditTransactionState.value.copy(bankId = bankId)
         if (transactionId != null) {
             loadTransaction(transactionId)
         }
@@ -117,7 +118,7 @@ class TransactionAddEditView @Inject constructor(
                     )
                 )
             }
-            _addEditTransactionState.value = _addEditTransactionState.value.copy(isSuccess = true)
         }
+        _addEditTransactionState.value = _addEditTransactionState.value.copy(isSuccess = true)
     }
 }

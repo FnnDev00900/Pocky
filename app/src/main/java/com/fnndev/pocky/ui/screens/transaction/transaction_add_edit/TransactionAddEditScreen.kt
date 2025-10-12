@@ -30,6 +30,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.fnndev.pocky.data.local.models.TransactionType
 import com.fnndev.pocky.ui.theme.KoodakFont
 import com.fnndev.pocky.ui.theme.TextPrimary
+import com.fnndev.pocky.ui.theme.VazirFont
 import com.fnndev.pocky.ui.viewmodel.transaction.TransactionAddEditView
 
 @Composable
@@ -38,7 +39,6 @@ fun TransactionAddEditScreen(
     onSaveClick: () -> Unit
 ) {
     val state = viewModel.addEditTransactionState.collectAsState()
-
 
     CompositionLocalProvider(value = LocalLayoutDirection provides LayoutDirection.Rtl) {
         Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
@@ -57,7 +57,9 @@ fun TransactionAddEditScreen(
                     border = BorderStroke(width = 1.dp, color = TextPrimary)
                 ) {
                     Column(
-                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -87,7 +89,7 @@ fun TransactionAddEditScreen(
                                 Text(text = "مبلغ", fontFamily = KoodakFont)
                             },
                             keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
+                                keyboardType = KeyboardType.Decimal,
                                 imeAction = ImeAction.Next
                             ),
                             maxLines = 1,
@@ -103,7 +105,7 @@ fun TransactionAddEditScreen(
                                 Text(text = "شرح", fontFamily = KoodakFont)
                             },
                             keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
+                                keyboardType = KeyboardType.Text,
                                 imeAction = ImeAction.Next
                             ),
                             maxLines = 5,
@@ -117,11 +119,17 @@ fun TransactionAddEditScreen(
                         )
 
                         Button(onClick = {
-                            onSaveClick()
+                            viewModel.onEvent(TransactionAddEditEvent.OnSaveClicked)
                         }) {
                             Text(text = "ذخیره")
                         }
                     }
+                }
+                if (state.value.error != null) {
+                    Text(text = state.value.error!!, fontFamily = VazirFont)
+                }
+                if (state.value.isSuccess) {
+                    onSaveClick()
                 }
             }
         }
@@ -133,20 +141,25 @@ fun TransactionTypeSelector(
     selectedType: TransactionType,
     onTypeSelected: (TransactionType) -> Unit
 ) {
-    TransactionType.entries.forEach { option ->
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onClick = { onTypeSelected(option) })
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            RadioButton(
-                selected = option == selectedType,
-                onClick = { onTypeSelected(option) }
-            )
-            Text(text = option.title)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        TransactionType.entries.forEach { option ->
+            Row(
+                modifier = Modifier
+                    .clickable(onClick = { onTypeSelected(option) })
+                    .padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                RadioButton(
+                    selected = option == selectedType,
+                    onClick = { onTypeSelected(option) }
+                )
+                Text(text = option.title)
+            }
         }
     }
-
 }

@@ -41,8 +41,20 @@ fun SetupNavGraph(navController: NavHostController) {
             TransactionScreen(navController)
         }
 
-        composable(route = ScreenRoute.AddEditTransactionScreen.route) {
-            TransactionAddEditScreen(onSaveClick = {navController.popBackStack()})
+        composable(
+            route = ScreenRoute.AddEditTransactionScreen.route + "/{bankId}",
+            arguments = listOf(
+//                navArgument(name = "transactionId") {
+//                    type = NavType.IntType
+//                    defaultValue = -1
+//                },
+                navArgument(name = "bankId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) {
+            TransactionAddEditScreen(onSaveClick = { navController.popBackStack()})
         }
     }
 }
