@@ -19,7 +19,7 @@ interface TransactionDao {
     fun getTransactionsByBankAccountId(bankAccountId: Int): Flow<List<Transaction>>
 
     @Query("SELECT * FROM transactions WHERE id = :id")
-    suspend fun getTransactionById(id: Int): Transaction
+    suspend fun getTransactionById(id: Int): Transaction?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTransaction(transaction: Transaction)

@@ -42,12 +42,12 @@ fun SetupNavGraph(navController: NavHostController) {
         }
 
         composable(
-            route = ScreenRoute.AddEditTransactionScreen.route + "/{bankId}",
+            route = ScreenRoute.AddEditTransactionScreen.route + "/{bankId}?transactionId={transactionId}",
             arguments = listOf(
-//                navArgument(name = "transactionId") {
-//                    type = NavType.IntType
-//                    defaultValue = -1
-//                },
+                navArgument(name = "transactionId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                },
                 navArgument(name = "bankId") {
                     type = NavType.IntType
                     defaultValue = -1

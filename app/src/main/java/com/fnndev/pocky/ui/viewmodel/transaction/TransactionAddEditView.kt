@@ -23,8 +23,10 @@ class TransactionAddEditView @Inject constructor(
     init {
         val transactionId = savedStateHandle.get<Int>("transactionId")
         val bankId = savedStateHandle.get<Int>("bankId")
-        _addEditTransactionState.value = _addEditTransactionState.value.copy(bankId = bankId)
-        if (transactionId != null) {
+        if (bankId != null) {
+            _addEditTransactionState.value = _addEditTransactionState.value.copy(bankId = bankId)
+        }
+        if (transactionId != null && transactionId != -1) {
             loadTransaction(transactionId)
         }
     }
@@ -34,7 +36,7 @@ class TransactionAddEditView @Inject constructor(
             val transaction = repository.getTransactionById(transactionId)
             transaction.let {
                 _addEditTransactionState.value = _addEditTransactionState.value.copy(
-                    transactionId = it.id,
+                    transactionId = it!!.id,
                     bankId = it.bankAccountId,
                     transactionDate = it.date,
                     transactionType = it.type,

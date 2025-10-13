@@ -1,5 +1,6 @@
 package com.fnndev.pocky.ui.viewmodel.transaction
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.fnndev.pocky.navigation.ScreenRoute
 import com.fnndev.pocky.ui.screens.transaction.transaction_list.TransactionEvent
 import com.fnndev.pocky.ui.screens.transaction.transaction_list.TransactionUiState
 import com.fnndev.pocky.ui.utils.UiEvent
+import com.fnndev.pocky.ui.utils.UiEvent.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +44,16 @@ class TransactionViewModel @Inject constructor(
     fun onEvent(event: TransactionEvent) {
         when (event) {
             TransactionEvent.OnAddReceiptClicked -> {
-                sendUiEvent(UiEvent.Navigate(ScreenRoute.AddEditTransactionScreen.route + "/$bankId"))
+                sendUiEvent(Navigate(ScreenRoute.AddEditTransactionScreen.route + "/$bankId"))
+            }
+
+            is TransactionEvent.OnTransactionClicked -> {
+                sendUiEvent(
+                    Navigate(
+                        ScreenRoute.AddEditTransactionScreen.route +
+                                "/$bankId?transactionId=${event.transaction.id}"
+                    )
+                )
             }
         }
     }

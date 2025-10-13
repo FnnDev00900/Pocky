@@ -1,6 +1,7 @@
 package com.fnndev.pocky.ui.screens.transaction.transaction_list
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -78,20 +79,28 @@ fun TransactionScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            items(transactionList) {
-                TransactionListItem(it)
+            items(transactionList) { transaction ->
+                TransactionListItem(
+                    transaction = transaction,
+                    onTransactionItemClick = {
+                        viewModel.onEvent(TransactionEvent.OnTransactionClicked(it))
+                    }
+                )
             }
         }
     }
 }
 
 @Composable
-fun TransactionListItem(transaction: Transaction) {
+fun TransactionListItem(transaction: Transaction, onTransactionItemClick: (Transaction) -> Unit) {
     CompositionLocalProvider(value = LocalLayoutDirection provides LayoutDirection.Rtl) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 2.dp, horizontal = 4.dp),
+                .padding(vertical = 2.dp, horizontal = 4.dp)
+                .clickable(onClick = {
+                    onTransactionItemClick(transaction)
+                }),
             shape = RoundedCornerShape(24.dp),
             border = BorderStroke(width = 2.dp, color = TextPrimary),
             color = if (transaction.type == TransactionType.INCOME) IncomeGreenLight else ExpenseRedLight,
