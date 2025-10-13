@@ -13,8 +13,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -84,6 +86,9 @@ fun TransactionScreen(
                     transaction = transaction,
                     onTransactionItemClick = {
                         viewModel.onEvent(TransactionEvent.OnTransactionClicked(it))
+                    },
+                    onTransactionDeleteClick = {
+                        viewModel.onEvent(TransactionEvent.OnTransactionDeleteClicked(it))
                     }
                 )
             }
@@ -92,7 +97,11 @@ fun TransactionScreen(
 }
 
 @Composable
-fun TransactionListItem(transaction: Transaction, onTransactionItemClick: (Transaction) -> Unit) {
+fun TransactionListItem(
+    transaction: Transaction,
+    onTransactionItemClick: (Transaction) -> Unit,
+    onTransactionDeleteClick: (Transaction) -> Unit
+) {
     CompositionLocalProvider(value = LocalLayoutDirection provides LayoutDirection.Rtl) {
         Surface(
             modifier = Modifier
@@ -141,6 +150,21 @@ fun TransactionListItem(transaction: Transaction, onTransactionItemClick: (Trans
                 ) {
                     Text("شرح:", fontFamily = VazirFont)
                     Text(text = transaction.description, fontFamily = VazirFont)
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    IconButton(onClick = {
+                        onTransactionDeleteClick(transaction)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Receipt"
+                        )
+                    }
                 }
             }
         }

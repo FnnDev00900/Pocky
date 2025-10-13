@@ -55,6 +55,12 @@ class TransactionViewModel @Inject constructor(
                     )
                 )
             }
+
+            is TransactionEvent.OnTransactionDeleteClicked -> {
+                viewModelScope.launch {
+                    repository.deleteTransaction(event.transaction)
+                }
+            }
         }
     }
 
