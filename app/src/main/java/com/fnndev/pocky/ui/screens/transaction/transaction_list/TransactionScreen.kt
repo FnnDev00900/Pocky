@@ -2,6 +2,7 @@ package com.fnndev.pocky.ui.screens.transaction.transaction_list
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,10 +15,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -32,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -57,7 +61,8 @@ fun TransactionScreen(
 ) {
 
     val uiState by viewModel.transactionState.collectAsState()
-    val transactionList = uiState.listTransaction
+    val transactionList = uiState.filteredTransactionList
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(true) {
         viewModel.uiEvent.collect { event ->
@@ -72,7 +77,14 @@ fun TransactionScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(
+                onClick = {
+                    focusManager.clearFocus()
+                },
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }),
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 viewModel.onEvent(TransactionEvent.OnAddReceiptClicked)
@@ -81,21 +93,55 @@ fun TransactionScreen(
             }
         }
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            items(transactionList) { transaction ->
-                TransactionListItem(
-                    transaction = transaction,
-                    onTransactionItemClick = {
-                        viewModel.onEvent(TransactionEvent.OnTransactionClicked(it))
-                    },
-                    onTransactionDeleteClick = {
-                        viewModel.onEvent(TransactionEvent.OnTransactionDeleteClicked(it))
+
+        CompositionLocalProvider(value = LocalLayoutDirection provides LayoutDirection.Rtl) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        value = uiState.searchQuery,
+                        onValueChange = viewModel::onSearchQueryChanged,
+                        label = { Text("جست‌وجوی تاریخ") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search"
+                            )
+                        }
+                    )
+                }
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+                    items(transactionList) { transaction ->
+                        TransactionListItem(
+                            transaction = transaction,
+                            onTransactionItemClick = {
+                                viewModel.onEvent(TransactionEvent.OnTransactionClicked(it))
+                            },
+                            onTransactionDeleteClick = {
+                                viewModel.onEvent(TransactionEvent.OnTransactionDeleteClicked(it))
+                            }
+                        )
                     }
-                )
+                }
             }
         }
     }
@@ -170,7 +216,8 @@ fun TransactionListItem(
                     Text("مبلغ:", fontFamily = VazirFont)
                     Text(
                         text = if (transaction.type == TransactionType.INCOME) NumberFormat.getInstance()
-                            .format(transaction.amount) + "+ ريال" else transaction.amount.toString() + "- ريال",
+                            .format(transaction.amount) + "+ ريال" else NumberFormat.getInstance()
+                            .format(transaction.amount) + "- ريال",
                         color = if (transaction.type == TransactionType.INCOME) IncomeGreen else ExpenseRed,
                         fontFamily = KoodakFont
                     )
