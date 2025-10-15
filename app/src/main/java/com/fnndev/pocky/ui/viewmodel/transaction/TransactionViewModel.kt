@@ -61,7 +61,26 @@ class TransactionViewModel @Inject constructor(
                     repository.deleteTransaction(event.transaction)
                 }
             }
+
+            is TransactionEvent.OnSearchQueryChanged -> {
+                _transactionState.value = _transactionState.value.copy(
+                    searchQuery = event.query,
+                    filteredTransactionList = _transactionState.value.listTransaction.filter {
+                        it.date.contains(event.query, ignoreCase = true)
+                    }
+                )
+            }
         }
+    }
+
+    fun onSearchQueryChanged(query: String){
+        val filtered = _transactionState.value.listTransaction.filter {
+            it.date.contains(query, ignoreCase = true)
+        }
+        _transactionState.value = _transactionState.value.copy(
+            searchQuery = query,
+            filteredTransactionList = filtered
+        )
     }
 
     private fun sendUiEvent(event: UiEvent) {
@@ -82,6 +101,7 @@ class TransactionViewModel @Inject constructor(
                 .collect { list ->
                     _transactionState.value = _transactionState.value.copy(
                         listTransaction = list,
+                        filteredTransactionList = list,
                         isLoading = false
                     )
                 }

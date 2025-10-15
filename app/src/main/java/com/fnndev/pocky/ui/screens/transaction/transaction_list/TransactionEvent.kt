@@ -6,4 +6,5 @@ sealed class TransactionEvent {
     object OnAddReceiptClicked : TransactionEvent()
     data class OnTransactionClicked(val transaction: Transaction) : TransactionEvent()
     data class OnTransactionDeleteClicked(val transaction: Transaction) : TransactionEvent()
+    data class OnSearchQueryChanged(val query: String) : TransactionEvent()
 }

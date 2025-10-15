@@ -2,8 +2,10 @@ package com.fnndev.pocky.ui.screens.transaction.transaction_list
 
 import com.fnndev.pocky.data.local.models.Transaction
 
-data class TransactionUiState (
+data class TransactionUiState(
     val listTransaction: List<Transaction> = emptyList(),
+    val filteredTransactionList: List<Transaction> = emptyList(),
+    val searchQuery: String = "",
     val isLoading: Boolean = false,
     val error: String? = null
 )
