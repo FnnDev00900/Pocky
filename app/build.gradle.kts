@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
     implementation(libs.compose.material3)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.compose.ui.text)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -79,4 +80,5 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.lottie.compose)
+    implementation("com.github.razaghimahdi:Compose-Persian-Date-Picker:1.1.1")
 }

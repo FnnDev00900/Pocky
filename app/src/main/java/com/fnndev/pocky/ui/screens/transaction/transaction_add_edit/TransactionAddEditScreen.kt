@@ -2,6 +2,9 @@ package com.fnndev.pocky.ui.screens.transaction.transaction_add_edit
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,16 +14,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -32,13 +43,52 @@ import com.fnndev.pocky.ui.theme.KoodakFont
 import com.fnndev.pocky.ui.theme.TextPrimary
 import com.fnndev.pocky.ui.theme.VazirFont
 import com.fnndev.pocky.ui.viewmodel.transaction.TransactionAddEditView
+import com.razaghimahdi.compose_persian_date.bottom_sheet.DatePickerLinearModalBottomSheet
+import com.razaghimahdi.compose_persian_date.core.components.rememberDialogDatePicker
+import com.razaghimahdi.compose_persian_date.dialog.PersianLinearDatePickerDialog
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionAddEditScreen(
     viewModel: TransactionAddEditView = hiltViewModel(),
     onSaveClick: () -> Unit
 ) {
     val state = viewModel.addEditTransactionState.collectAsState()
+
+    val focusManager = LocalFocusManager.current
+
+    val coroutine = rememberCoroutineScope()
+    val rememberPersianDialogDatePicker = rememberDialogDatePicker()
+    val rememberPersianBottomSheetDatePickerController = rememberDialogDatePicker()
+    val showDialog = remember { mutableStateOf(false) }
+    val bottomSheetState = rememberModalBottomSheetState()
+
+    if (showDialog.value) {
+        PersianLinearDatePickerDialog(
+            rememberPersianDialogDatePicker,
+            Modifier.fillMaxWidth(),
+            onDismissRequest = { showDialog.value = false },
+            onDateChanged = { year, month, day ->
+                val selectedDate = "$year/$month/$day"
+                viewModel.onEvent(TransactionAddEditEvent.OnDateChange(selectedDate))
+                focusManager.clearFocus()
+            })
+    }
+
+    if (bottomSheetState.isVisible) {
+        DatePickerLinearModalBottomSheet(
+            modifier = Modifier
+                .fillMaxSize(),
+            sheetState = bottomSheetState,
+            controller = rememberPersianBottomSheetDatePickerController,
+            onDismissRequest = {
+                coroutine.launch {
+                    bottomSheetState.hide()
+                }
+            }
+        )
+    }
 
     CompositionLocalProvider(value = LocalLayoutDirection provides LayoutDirection.Rtl) {
         Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
@@ -63,21 +113,34 @@ fun TransactionAddEditScreen(
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        val interactionSource = remember { MutableInteractionSource() }
+                        val isFocused by interactionSource.collectIsFocusedAsState()
+
+                        if (isFocused) {
+                            LaunchedEffect(Unit) {
+                                showDialog.value = true
+                            }
+                        }
+
                         OutlinedTextField(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable(onClick = {
+                                    showDialog.value = true
+                                }),
                             value = state.value.transactionDate,
-                            onValueChange = {
-                                viewModel.onEvent(TransactionAddEditEvent.OnDateChange(it))
-                            },
+                            onValueChange = {},
                             label = {
                                 Text(text = "تاریخ", fontFamily = KoodakFont)
                             },
+                            interactionSource = interactionSource,
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Next
                             ),
                             maxLines = 1,
-                            singleLine = true
+                            singleLine = true,
+                            readOnly = true
                         )
                         OutlinedTextField(
                             modifier = Modifier.fillMaxWidth(),
