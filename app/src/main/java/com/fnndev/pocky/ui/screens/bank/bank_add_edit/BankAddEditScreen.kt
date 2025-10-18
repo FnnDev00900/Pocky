@@ -1,6 +1,5 @@
 package com.fnndev.pocky.ui.screens.bank.bank_add_edit
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +19,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -37,6 +39,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.fnndev.pocky.R
 import com.fnndev.pocky.ui.theme.ExpenseRed
 import com.fnndev.pocky.ui.theme.VazirFont
+import com.fnndev.pocky.ui.utils.ConvertNumbers
 import com.fnndev.pocky.ui.viewmodel.bank_account.BankAddEditViewModel
 import java.text.NumberFormat
 import java.util.Locale
@@ -87,24 +90,11 @@ fun BankAddEditScreen(
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            OutlinedTextField(
-                value = TextFieldValue(
-                    text = NumberFormat.getNumberInstance(Locale.US).format(state.balance.toLongOrNull() ?: 0),
-                    selection = TextRange(NumberFormat.getNumberInstance(Locale.US).format(state.balance.toLongOrNull() ?: 0).length)
-                ),
-                onValueChange = {input ->
-                    val convertedInput = convertPersianToEnglishNumbers(input.text)
-                    val digits = convertedInput.filter { it.isDigit() }
-                    Log.d("00900", "BankAddEditScreen: ValueChange $convertedInput")
-                    viewModel.onEvent(BankAddEditUiEvent.OnBalanceChange(digits))
-                },
-                label = {
-                    Text(text = "موجودی", fontFamily = VazirFont)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+            BankBalanceField(
+                state = state,
+                onBalanceChange = {
+                    viewModel.onEvent(BankAddEditUiEvent.OnBalanceChange(it))
+                }
             )
 
             Button(
@@ -131,16 +121,54 @@ fun BankAddEditScreen(
     }
 }
 
-private fun convertPersianToEnglishNumbers(input: String): String {
-    return input
-        .replace('۰', '0')
-        .replace('۱', '1')
-        .replace('۲', '2')
-        .replace('۳', '3')
-        .replace('۴', '4')
-        .replace('۵', '5')
-        .replace('۶', '6')
-        .replace('۷', '7')
-        .replace('۸', '8')
-        .replace('۹', '9')
+@Composable
+fun BankBalanceField(
+    state: BankAddEditState,
+    onBalanceChange: (String) -> Unit
+) {
+    var textFieldValue by remember { mutableStateOf(TextFieldValue("")) }
+
+    // همگام‌سازی با ViewModel فقط زمانی که مقدار از بیرون تغییر کند
+    LaunchedEffect(state.balance) {
+        val formatted = NumberFormat.getNumberInstance(Locale.US)
+            .format(state.balance.toLongOrNull() ?: 0)
+
+        if (formatted != textFieldValue.text) {
+            textFieldValue = TextFieldValue(
+                text = formatted,
+                selection = TextRange(formatted.length)
+            )
+        }
+    }
+
+    OutlinedTextField(
+        value = textFieldValue,
+        onValueChange = { newValue ->
+            val english = ConvertNumbers.convertPersianToEnglishNumbers(newValue.text)
+            val digits = english.filter { it.isDigit() }
+
+            if (digits.isEmpty()) {
+                textFieldValue = TextFieldValue("", TextRange(0))
+                onBalanceChange("")
+                return@OutlinedTextField
+            }
+
+            val formatted = NumberFormat.getNumberInstance(Locale.US).format(digits.toLong())
+            val diff = formatted.length - digits.length
+            val newSelection = (newValue.selection.end + diff).coerceIn(0, formatted.length)
+
+            textFieldValue = TextFieldValue(
+                text = formatted,
+                selection = TextRange(newSelection)
+            )
+
+            onBalanceChange(digits)
+        },
+        label = { Text("موجودی", fontFamily = VazirFont) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        singleLine = true
+    )
 }

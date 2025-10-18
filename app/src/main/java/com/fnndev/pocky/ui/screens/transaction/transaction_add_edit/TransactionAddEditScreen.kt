@@ -2,7 +2,6 @@ package com.fnndev.pocky.ui.screens.transaction.transaction_add_edit
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -29,12 +28,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -42,11 +44,14 @@ import com.fnndev.pocky.data.local.models.TransactionType
 import com.fnndev.pocky.ui.theme.KoodakFont
 import com.fnndev.pocky.ui.theme.TextPrimary
 import com.fnndev.pocky.ui.theme.VazirFont
+import com.fnndev.pocky.ui.utils.ConvertNumbers
 import com.fnndev.pocky.ui.viewmodel.transaction.TransactionAddEditView
 import com.razaghimahdi.compose_persian_date.bottom_sheet.DatePickerLinearModalBottomSheet
 import com.razaghimahdi.compose_persian_date.core.components.rememberDialogDatePicker
 import com.razaghimahdi.compose_persian_date.dialog.PersianLinearDatePickerDialog
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -142,21 +147,11 @@ fun TransactionAddEditScreen(
                             singleLine = true,
                             readOnly = true
                         )
-                        OutlinedTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            value = state.value.transactionAmount,
-                            onValueChange = {
+                        TransactionAmountField(
+                            state = state.value,
+                            onAmountChange = {
                                 viewModel.onEvent(TransactionAddEditEvent.OnAmountChange(it))
-                            },
-                            label = {
-                                Text(text = "مبلغ", fontFamily = KoodakFont)
-                            },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Decimal,
-                                imeAction = ImeAction.Next
-                            ),
-                            maxLines = 1,
-                            singleLine = true
+                            }
                         )
                         OutlinedTextField(
                             modifier = Modifier.fillMaxWidth(),
@@ -225,4 +220,54 @@ fun TransactionTypeSelector(
             }
         }
     }
+}
+@Composable
+fun TransactionAmountField(
+    state: TransactionAddEditState,
+    onAmountChange: (String) -> Unit
+) {
+    var textFieldValue by remember { mutableStateOf(TextFieldValue("")) }
+
+    LaunchedEffect(state.transactionAmount) {
+        val formatted = NumberFormat.getNumberInstance(Locale.US)
+            .format(state.transactionAmount.toLongOrNull() ?: 0)
+
+        if (formatted != textFieldValue.text) {
+            textFieldValue = TextFieldValue(
+                text = formatted,
+                selection = TextRange(formatted.length)
+            )
+        }
+    }
+
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = textFieldValue,
+        onValueChange = { newValue ->
+            val english = ConvertNumbers.convertPersianToEnglishNumbers(newValue.text)
+            val digits = english.filter { it.isDigit() }
+
+            if (digits.isEmpty()) {
+                textFieldValue = TextFieldValue("", TextRange(0))
+                onAmountChange("")
+                return@OutlinedTextField
+            }
+
+            val formatted = NumberFormat.getNumberInstance(Locale.US).format(digits.toLong())
+            val diff = formatted.length - digits.length
+            val newSelection = (newValue.selection.end + diff).coerceIn(0, formatted.length)
+
+            textFieldValue = TextFieldValue(
+                text = formatted,
+                selection = TextRange(newSelection)
+            )
+            onAmountChange(digits)
+        },
+        label = { Text("مبلغ", fontFamily = KoodakFont) },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Next
+        ),
+        singleLine = true
+    )
 }
