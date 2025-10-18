@@ -22,6 +22,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -32,6 +36,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +57,7 @@ import com.fnndev.pocky.ui.theme.TextPrimary
 import com.fnndev.pocky.ui.theme.VazirFont
 import com.fnndev.pocky.ui.utils.UiEvent
 import com.fnndev.pocky.ui.viewmodel.transaction.TransactionViewModel
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 
 @Composable
@@ -64,6 +70,9 @@ fun TransactionScreen(
     val transactionList = uiState.filteredTransactionList
     val focusManager = LocalFocusManager.current
 
+    val snackBarHostState = remember { SnackbarHostState() }
+    val scopeSnackBar = rememberCoroutineScope()
+
     LaunchedEffect(true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -71,7 +80,19 @@ fun TransactionScreen(
                     navController.navigate(event.route)
                 }
 
-                else -> Unit
+                is UiEvent.ShowSnackBar -> {
+                    scopeSnackBar.launch {
+                        snackBarHostState.currentSnackbarData?.dismiss()
+                        val result = snackBarHostState.showSnackbar(
+                            message = event.message,
+                            actionLabel = event.action,
+                            duration = SnackbarDuration.Short
+                        )
+                        if (result == SnackbarResult.ActionPerformed){
+                            viewModel.onEvent(TransactionEvent.OnUndoDeleteClick)
+                        }
+                    }
+                }
             }
         }
     }
@@ -91,7 +112,8 @@ fun TransactionScreen(
             }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Receipt")
             }
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
     ) { paddingValues ->
 
         CompositionLocalProvider(value = LocalLayoutDirection provides LayoutDirection.Rtl) {

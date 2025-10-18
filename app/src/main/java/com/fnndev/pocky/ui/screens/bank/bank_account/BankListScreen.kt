@@ -1,7 +1,6 @@
 package com.fnndev.pocky.ui.screens.bank.bank_account
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -212,12 +211,7 @@ fun BankListScreen(
                                         viewModel.onEvent(BankAccountUiEvent.DeleteBankAccount(bank))
                                     },
                                     onReceipt = {
-                                        viewModel.onEvent(
-                                            BankAccountUiEvent.OnReceiptClicked(
-                                                it
-                                            )
-                                        )
-                                        Log.d("00900", "BankListScreen: Item =${it}")
+                                        viewModel.onEvent(event = BankAccountUiEvent.OnReceiptClicked(it))
                                     }
                                 )
                             }

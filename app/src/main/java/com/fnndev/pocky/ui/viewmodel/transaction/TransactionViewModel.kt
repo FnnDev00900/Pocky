@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fnndev.pocky.data.local.models.Transaction
 import com.fnndev.pocky.data.local.repository.AccountRepository
 import com.fnndev.pocky.navigation.ScreenRoute
 import com.fnndev.pocky.ui.screens.transaction.transaction_list.TransactionEvent
@@ -35,6 +36,8 @@ class TransactionViewModel @Inject constructor(
 
     private var bankId = savedStateHandle.get<Int>("bankId")
 
+    private var deletedTransaction: Transaction? = null
+
     init {
         if (bankId != -1 && bankId != null) {
             observeTransactionsByBankAccountId(bankId!!)
@@ -58,7 +61,14 @@ class TransactionViewModel @Inject constructor(
 
             is TransactionEvent.OnTransactionDeleteClicked -> {
                 viewModelScope.launch {
-                    repository.deleteTransaction(event.transaction)
+                    try {
+                        deletedTransaction = event.transaction
+                        repository.deleteTransaction(event.transaction)
+                        sendUiEvent(ShowSnackBar(message = "رسید حذف شد", action = "بازگردانی"))
+                    }
+                    catch (e: Exception){
+                        _transactionState.value = _transactionState.value.copy(error = e.message)
+                    }
                 }
             }
 
@@ -69,6 +79,15 @@ class TransactionViewModel @Inject constructor(
                         it.date.contains(event.query, ignoreCase = true)
                     }
                 )
+            }
+
+            TransactionEvent.OnUndoDeleteClick -> {
+                if (deletedTransaction != null){
+                    viewModelScope.launch {
+                        repository.insertTransaction(deletedTransaction!!)
+                        deletedTransaction = null
+                    }
+                }
             }
         }
     }
