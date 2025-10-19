@@ -42,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -143,7 +144,8 @@ fun TransactionScreen(
                                 imageVector = Icons.Default.Search,
                                 contentDescription = "Search"
                             )
-                        }
+                        },
+                        textStyle = TextStyle(fontFamily = KoodakFont)
                     )
                 }
 
@@ -256,7 +258,7 @@ fun TransactionListItem(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.End
                 ) {
                     IconButton(onClick = {
                         showDialog = true

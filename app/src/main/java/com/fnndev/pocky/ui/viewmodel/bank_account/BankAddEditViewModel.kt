@@ -64,31 +64,42 @@ class BankAddEditViewModel @Inject constructor(
     }
 
     private fun saveBank() {
-        val name = _addEditState.value.name
-        val balance = _addEditState.value.balance.toDouble()
-
-        if (name.isBlank()) {
-            _addEditState.value = _addEditState.value.copy(
-                error = "نام بانک نباید خالی باشد"
-            )
-            return
-        }
-
-        if (_addEditState.value.id == -1 || _addEditState.value.id == null) {
-            viewModelScope.launch(Dispatchers.IO) {
-                repository.insertBank(bank = BankAccount(name = name, balance = balance.toLong()))
+        try {
+            val name = _addEditState.value.name
+            val balance = if (_addEditState.value.balance == "") 0L else {
+                _addEditState.value.balance.toLong()
             }
-        } else {
-            viewModelScope.launch(Dispatchers.IO) {
-                repository.updateBank(
-                    bank = BankAccount(
-                        id = _addEditState.value.id!!,
-                        name = name,
-                        balance = balance.toLong()
-                    )
+
+            if (name.isBlank()) {
+                _addEditState.value = _addEditState.value.copy(
+                    error = "نام بانک نباید خالی باشد"
                 )
+                return
             }
+
+            if (_addEditState.value.id == -1 || _addEditState.value.id == null) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    repository.insertBank(
+                        bank = BankAccount(
+                            name = name,
+                            balance = balance.toLong()
+                        )
+                    )
+                }
+            } else {
+                viewModelScope.launch(Dispatchers.IO) {
+                    repository.updateBank(
+                        bank = BankAccount(
+                            id = _addEditState.value.id!!,
+                            name = name,
+                            balance = balance.toLong()
+                        )
+                    )
+                }
+            }
+            _addEditState.value = _addEditState.value.copy(isSuccess = true)
+        } catch (e: Exception) {
+            _addEditState.value = _addEditState.value.copy(error = e.message)
         }
-        _addEditState.value = _addEditState.value.copy(isSuccess = true)
     }
 }

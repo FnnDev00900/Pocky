@@ -20,6 +20,7 @@ class TransactionAddEditView @Inject constructor(
 ) : ViewModel() {
     private val _addEditTransactionState = MutableStateFlow(TransactionAddEditState())
     val addEditTransactionState = _addEditTransactionState.asStateFlow()
+
     init {
         val transactionId = savedStateHandle.get<Int>("transactionId")
         val bankId = savedStateHandle.get<Int>("bankId")
@@ -84,10 +85,11 @@ class TransactionAddEditView @Inject constructor(
         val bankId = addEditTransactionState.value.bankId
         val date = addEditTransactionState.value.transactionDate
         val type = addEditTransactionState.value.transactionType
-        val amount = addEditTransactionState.value.transactionAmount.toDouble()
+        val amount =
+            if (addEditTransactionState.value.transactionAmount.isBlank()) 0L else addEditTransactionState.value.transactionAmount.toLong()
         val description = addEditTransactionState.value.transactionDescription
 
-        if (date.isBlank() || amount.toString().isBlank()) {
+        if (date.isBlank() && amount == 0L) {
             _addEditTransactionState.value = _addEditTransactionState.value.copy(
                 error = "اطلاعات را واردی کنید"
             )
@@ -101,7 +103,7 @@ class TransactionAddEditView @Inject constructor(
                         bankAccountId = bankId!!,
                         date = date,
                         type = type,
-                        amount = amount.toLong(),
+                        amount = amount,
                         description = description
                     )
                 )

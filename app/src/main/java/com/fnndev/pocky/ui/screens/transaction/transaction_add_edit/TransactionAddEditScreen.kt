@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -145,7 +146,8 @@ fun TransactionAddEditScreen(
                             ),
                             maxLines = 1,
                             singleLine = true,
-                            readOnly = true
+                            readOnly = true,
+                            textStyle = TextStyle(fontFamily = KoodakFont)
                         )
                         TransactionAmountField(
                             state = state.value,
@@ -167,7 +169,8 @@ fun TransactionAddEditScreen(
                                 imeAction = ImeAction.Next
                             ),
                             maxLines = 5,
-                            singleLine = false
+                            singleLine = false,
+                            textStyle = TextStyle(fontFamily = KoodakFont)
                         )
                         TransactionTypeSelector(
                             selectedType = state.value.transactionType,
@@ -268,6 +271,7 @@ fun TransactionAmountField(
             keyboardType = KeyboardType.Number,
             imeAction = ImeAction.Next
         ),
-        singleLine = true
+        singleLine = true,
+        textStyle = TextStyle(fontFamily = KoodakFont)
     )
 }

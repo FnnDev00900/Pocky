@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.LayoutDirection
@@ -38,6 +39,7 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.fnndev.pocky.R
 import com.fnndev.pocky.ui.theme.ExpenseRed
+import com.fnndev.pocky.ui.theme.KoodakFont
 import com.fnndev.pocky.ui.theme.VazirFont
 import com.fnndev.pocky.ui.utils.ConvertNumbers
 import com.fnndev.pocky.ui.viewmodel.bank_account.BankAddEditViewModel
@@ -86,7 +88,8 @@ fun BankAddEditScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 16.dp),
+                textStyle = TextStyle(fontFamily = KoodakFont)
             )
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -127,8 +130,6 @@ fun BankBalanceField(
     onBalanceChange: (String) -> Unit
 ) {
     var textFieldValue by remember { mutableStateOf(TextFieldValue("")) }
-
-    // همگام‌سازی با ViewModel فقط زمانی که مقدار از بیرون تغییر کند
     LaunchedEffect(state.balance) {
         val formatted = NumberFormat.getNumberInstance(Locale.US)
             .format(state.balance.toLongOrNull() ?: 0)
@@ -169,6 +170,7 @@ fun BankBalanceField(
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        singleLine = true
+        singleLine = true,
+        textStyle = TextStyle(fontFamily = KoodakFont)
     )
 }

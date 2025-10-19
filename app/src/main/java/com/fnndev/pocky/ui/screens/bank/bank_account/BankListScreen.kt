@@ -45,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -167,7 +168,8 @@ fun BankListScreen(
                                         imageVector = Icons.Default.Search,
                                         contentDescription = "Search"
                                     )
-                                }
+                                },
+                                textStyle = TextStyle(fontFamily = KoodakFont)
                             )
                         }
                         Row(
@@ -211,7 +213,11 @@ fun BankListScreen(
                                         viewModel.onEvent(BankAccountUiEvent.DeleteBankAccount(bank))
                                     },
                                     onReceipt = {
-                                        viewModel.onEvent(event = BankAccountUiEvent.OnReceiptClicked(it))
+                                        viewModel.onEvent(
+                                            event = BankAccountUiEvent.OnReceiptClicked(
+                                                it
+                                            )
+                                        )
                                     }
                                 )
                             }
@@ -224,7 +230,12 @@ fun BankListScreen(
 }
 
 @Composable
-fun BankItem(bank: BankAccount, onClick: () -> Unit, onDelete: () -> Unit, onReceipt: (bankId: Int) -> Unit) {
+fun BankItem(
+    bank: BankAccount,
+    onClick: () -> Unit,
+    onDelete: () -> Unit,
+    onReceipt: (bankId: Int) -> Unit
+) {
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
