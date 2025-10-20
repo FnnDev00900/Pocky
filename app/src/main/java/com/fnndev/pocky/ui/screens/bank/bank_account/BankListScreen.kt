@@ -46,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -138,7 +139,10 @@ fun BankListScreen(
                     FloatingActionButton(onClick = {
                         navController.navigate(ScreenRoute.AddEditBankScreen.route + "/-1")
                     }) {
-                        Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(R.string.add_account)
+                        )
                     }
                 }, snackbarHost = {
                     SnackbarHost(hostState = snackBarHostState)
@@ -165,11 +169,11 @@ fun BankListScreen(
                                     .padding(horizontal = 16.dp, vertical = 8.dp),
                                 value = uiState.searchQuery,
                                 onValueChange = viewModel::onSearchQueryChanged,
-                                label = { Text("جست‌وجوی حساب") },
+                                label = { Text(stringResource(R.string.search_account)) },
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Default.Search,
-                                        contentDescription = "Search"
+                                        contentDescription = stringResource(R.string.search_account)
                                     )
                                 },
                                 textStyle = TextStyle(fontFamily = KoodakFont), singleLine = true,
@@ -200,7 +204,7 @@ fun BankListScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Start
                         ) {
-                            Text(text = "لیست حساب ها", fontSize = 22.sp, fontFamily = VazirFont)
+                            Text(text = stringResource(R.string.list_accounts), fontSize = 22.sp, fontFamily = VazirFont)
                         }
                         LazyColumn(
                             modifier = Modifier
@@ -256,16 +260,16 @@ fun BankItem(
                             showDialog = false
                         }
                     ) {
-                        Text(text = "آره", fontFamily = VazirFont, color = ExpenseRed)
+                        Text(text = stringResource(R.string.str_yes), fontFamily = VazirFont, color = ExpenseRed)
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showDialog = false }) {
-                        Text(text = "نه", fontFamily = VazirFont)
+                        Text(text = stringResource(R.string.str_no), fontFamily = VazirFont)
                     }
                 },
                 title = {
-                    Text(text = "حذف حساب", fontFamily = VazirFont)
+                    Text(text = stringResource(R.string.delete_account), fontFamily = VazirFont)
                 },
                 text = {
                     Text("آیا حساب ${bank.name} حذف شود", fontFamily = VazirFont)
@@ -303,10 +307,10 @@ fun BankItem(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.Start
                     ) {
-                        Text(text = "حساب:" + bank.name, fontFamily = VazirFont, fontSize = 20.sp)
+                        Text(text = stringResource(R.string.str_account) + bank.name, fontFamily = VazirFont, fontSize = 20.sp)
                         Text(
-                            text = "موجودی:" + NumberFormat.getInstance()
-                                .format(bank.balance) + " ریال",
+                            text = stringResource(R.string.amount_account) + NumberFormat.getInstance()
+                                .format(bank.balance) + " " + stringResource(R.string.str_rial),
                             fontFamily = KoodakFont,
                             fontSize = 18.sp,
                             color = TextSecondary
@@ -315,7 +319,7 @@ fun BankItem(
 
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete",
+                        contentDescription = stringResource(R.string.str_delete),
                         tint = ExpenseRed,
                         modifier = Modifier
                             .clickable(onClick = { showDialog = true })
@@ -331,8 +335,8 @@ fun BankItem(
                     OutlinedButton(
                         onClick = { onReceipt(bank.id) }
                     ) {
-                        Icon(imageVector = Icons.Default.Add, "Add")
-                        Text(text = "افزودن رسید", fontFamily = VazirFont)
+                        Icon(imageVector = Icons.Default.Add, stringResource(R.string.str_add))
+                        Text(text = stringResource(R.string.add_receipt), fontFamily = VazirFont)
                     }
                 }
             }

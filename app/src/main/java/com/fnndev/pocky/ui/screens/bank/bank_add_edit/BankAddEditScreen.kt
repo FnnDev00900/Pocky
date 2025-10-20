@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -75,7 +76,9 @@ fun BankAddEditScreen(
             )
 
             Text(
-                text = if (state.id == null) "افزودن بانک" else "ویرایش بانک",
+                text = if (state.id == null) stringResource(
+                    R.string.add_account
+                ) else stringResource(R.string.edit_account),
                 fontFamily = VazirFont
             )
             Spacer(modifier = Modifier.height(32.dp))
@@ -84,7 +87,11 @@ fun BankAddEditScreen(
                 value = state.name,
                 onValueChange = { viewModel.onEvent(BankAddEditUiEvent.OnNameChange(it)) },
                 label = {
-                    Text(text = "نام بانک", fontFamily = VazirFont)
+                    Text(
+                        text = stringResource(
+                            R.string.name_account
+                        ), fontFamily = VazirFont
+                    )
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -95,6 +102,7 @@ fun BankAddEditScreen(
 
             BankBalanceField(
                 state = state,
+                isUpdate = state.id != null,
                 onBalanceChange = {
                     viewModel.onEvent(BankAddEditUiEvent.OnBalanceChange(it))
                 }
@@ -108,7 +116,9 @@ fun BankAddEditScreen(
                     .padding(horizontal = 16.dp)
             ) {
                 Text(
-                    text = if (state.id == null) "ثبت بانک" else "ویرایش بانک",
+                    text = if (state.id == null) stringResource(R.string.add_account) else stringResource(
+                        R.string.edit_account
+                    ),
                     fontFamily = VazirFont
                 )
             }
@@ -127,6 +137,7 @@ fun BankAddEditScreen(
 @Composable
 fun BankBalanceField(
     state: BankAddEditState,
+    isUpdate: Boolean,
     onBalanceChange: (String) -> Unit
 ) {
     var textFieldValue by remember { mutableStateOf(TextFieldValue("")) }
@@ -165,12 +176,19 @@ fun BankBalanceField(
 
             onBalanceChange(digits)
         },
-        label = { Text("موجودی", fontFamily = VazirFont) },
+        label = {
+            Text(
+                text = if (isUpdate) stringResource(R.string.amount_account) else stringResource(
+                    R.string.first_amount_account
+                ), fontFamily = VazirFont
+            )
+        },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
         textStyle = TextStyle(fontFamily = KoodakFont)
+        , readOnly = isUpdate
     )
 }

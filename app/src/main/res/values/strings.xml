@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">Pocky</string>
+    <string name="edit_account">ویرایش حساب</string>
+    <string name="add_account">افزودن حساب</string>
+    <string name="name_account">نام حساب</string>
+    <string name="first_amount_account">موجودی اولیه</string>
+    <string name="amount_account">موجودی</string>
+    <string name="str_amount">مبلغ</string>
+    <string name="search_account">جستوجو حساب</string>
+    <string name="list_accounts">لیست حساب ها</string>
+    <string name="str_yes">آره</string>
+    <string name="str_no">نه</string>
+    <string name="delete_account">حذف حساب</string>
+    <string name="str_account">حساب</string>
+    <string name="str_rial">ريال</string>
+    <string name="str_delete">حذف</string>
+    <string name="str_add">افزودن</string>
+    <string name="add_receipt">افزودن رسید</string>
+    <string name="str_date_transaction">تاریخ</string>
+    <string name="str_description">شرح</string>
+    <string name="str_edit">ویرایش</string>
+    <string name="str_search">جستوجو</string>
+    <string name="delete_receipt">حذف رسید</string>
+    <string name="message_delete_receipt">آیا از حذف این رسید مطمئن هستید؟</string>
 </resources>

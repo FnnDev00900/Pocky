@@ -43,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -50,6 +51,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.fnndev.pocky.R
 import com.fnndev.pocky.data.local.models.Transaction
 import com.fnndev.pocky.data.local.models.TransactionType
 import com.fnndev.pocky.ui.theme.ExpenseRed
@@ -114,7 +116,7 @@ fun TransactionScreen(
             FloatingActionButton(onClick = {
                 viewModel.onEvent(TransactionEvent.OnAddReceiptClicked)
             }) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Receipt")
+                Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.add_receipt))
             }
         },
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
@@ -141,11 +143,11 @@ fun TransactionScreen(
                             .padding(horizontal = 16.dp, vertical = 8.dp),
                         value = uiState.searchQuery,
                         onValueChange = viewModel::onSearchQueryChanged,
-                        label = { Text("جست‌وجوی تاریخ") },
+                        label = { Text(stringResource(R.string.str_search)) },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Search,
-                                contentDescription = "Search"
+                                contentDescription = stringResource(R.string.str_search)
                             )
                         },
                         textStyle = TextStyle(fontFamily = KoodakFont),
@@ -194,18 +196,18 @@ fun TransactionListItem(
                             onTransactionDeleteClick(transaction)
                             showDialog = false
                         }
-                    ) { Text(text = "آره", fontFamily = VazirFont, color = ExpenseRed) }
+                    ) { Text(text = stringResource(R.string.str_yes), fontFamily = VazirFont, color = ExpenseRed) }
                 },
                 dismissButton = {
                     TextButton(
                         onClick = { showDialog = false }
-                    ) { Text(text = "نه", fontFamily = VazirFont) }
+                    ) { Text(text = stringResource(R.string.str_no), fontFamily = VazirFont) }
                 },
                 title = {
-                    Text(text = "حذف رسید", fontFamily = VazirFont)
+                    Text(text = stringResource(R.string.delete_receipt), fontFamily = VazirFont)
                 },
                 text = {
-                    Text(text = "آیا از حذف این رسید مطمئن هستید؟")
+                    Text(text = stringResource(R.string.message_delete_receipt))
                 }
             )
         }

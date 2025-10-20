@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -41,6 +42,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.fnndev.pocky.R
 import com.fnndev.pocky.data.local.models.TransactionType
 import com.fnndev.pocky.ui.theme.ExpenseRed
 import com.fnndev.pocky.ui.theme.KoodakFont
@@ -138,7 +140,10 @@ fun TransactionAddEditScreen(
                             value = state.value.transactionDate,
                             onValueChange = {},
                             label = {
-                                Text(text = "تاریخ", fontFamily = KoodakFont)
+                                Text(
+                                    text = stringResource(R.string.str_date_transaction),
+                                    fontFamily = KoodakFont
+                                )
                             },
                             interactionSource = interactionSource,
                             keyboardOptions = KeyboardOptions(
@@ -163,7 +168,10 @@ fun TransactionAddEditScreen(
                                 viewModel.onEvent(TransactionAddEditEvent.OnDescriptionChange(it))
                             },
                             label = {
-                                Text(text = "شرح", fontFamily = KoodakFont)
+                                Text(
+                                    text = stringResource(R.string.str_description),
+                                    fontFamily = KoodakFont
+                                )
                             },
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Text,
@@ -183,10 +191,18 @@ fun TransactionAddEditScreen(
                         Button(onClick = {
                             viewModel.onEvent(TransactionAddEditEvent.OnSaveClicked)
                         }) {
-                            Text(text = "ذخیره")
+                            Text(
+                                text = if (state.value.transactionId != null) stringResource(R.string.str_edit) else stringResource(
+                                    R.string.str_add
+                                )
+                            )
                         }
                         if (state.value.error != null) {
-                            Text(text = state.value.error!!, fontFamily = VazirFont, color = ExpenseRed)
+                            Text(
+                                text = state.value.error!!,
+                                fontFamily = VazirFont,
+                                color = ExpenseRed
+                            )
                         }
                     }
                 }
@@ -225,6 +241,7 @@ fun TransactionTypeSelector(
         }
     }
 }
+
 @Composable
 fun TransactionAmountField(
     state: TransactionAddEditState,
@@ -267,7 +284,7 @@ fun TransactionAmountField(
             )
             onAmountChange(digits)
         },
-        label = { Text("مبلغ", fontFamily = KoodakFont) },
+        label = { Text(stringResource(R.string.str_amount), fontFamily = KoodakFont) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number,
             imeAction = ImeAction.Next
