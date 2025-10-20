@@ -16,5 +16,5 @@ interface AccountRepository {
     suspend fun getTransactionById(id: Int): Transaction?
     suspend fun updateTransaction(transaction: Transaction)
     suspend fun deleteTransaction(transaction: Transaction)
-    suspend fun insertTransaction(transaction: Transaction)
+    suspend fun insertTransaction(transaction: Transaction): Boolean
 }

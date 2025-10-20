@@ -96,13 +96,20 @@ class AccountRepositoryImpl @Inject constructor(
         transactionDao.deleteTransaction(transaction)
     }
 
-    override suspend fun insertTransaction(transaction: Transaction) {
-        transactionDao.insertTransaction(transaction)
+    override suspend fun insertTransaction(transaction: Transaction): Boolean {
         val account = bankAccountDao.getBankAccountById(transaction.bankAccountId)
+
+        if (transaction.type == TransactionType.EXPENSE && account.balance < transaction.amount) {
+            // Not enough balance, do not register transaction.
+            return false
+        }
+
+        transactionDao.insertTransaction(transaction)
         val newBalance = when (transaction.type) {
             TransactionType.INCOME -> account.balance + transaction.amount
             TransactionType.EXPENSE -> account.balance - transaction.amount
         }
         bankAccountDao.updateBankAccount(account.copy(balance = newBalance))
+        return true
     }
 }

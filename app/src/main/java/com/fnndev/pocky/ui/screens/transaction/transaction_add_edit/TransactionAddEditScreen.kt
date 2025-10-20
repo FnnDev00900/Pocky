@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.fnndev.pocky.data.local.models.TransactionType
+import com.fnndev.pocky.ui.theme.ExpenseRed
 import com.fnndev.pocky.ui.theme.KoodakFont
 import com.fnndev.pocky.ui.theme.TextPrimary
 import com.fnndev.pocky.ui.theme.VazirFont
@@ -114,7 +115,7 @@ fun TransactionAddEditScreen(
                 ) {
                     Column(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .fillMaxWidth()
                             .padding(16.dp),
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -184,10 +185,10 @@ fun TransactionAddEditScreen(
                         }) {
                             Text(text = "ذخیره")
                         }
+                        if (state.value.error != null) {
+                            Text(text = state.value.error!!, fontFamily = VazirFont, color = ExpenseRed)
+                        }
                     }
-                }
-                if (state.value.error != null) {
-                    Text(text = state.value.error!!, fontFamily = VazirFont)
                 }
                 if (state.value.isSuccess) {
                     onSaveClick()

@@ -98,7 +98,7 @@ class TransactionAddEditView @Inject constructor(
 
         if (transactionId == null) {
             viewModelScope.launch {
-                repository.insertTransaction(
+                val result =repository.insertTransaction(
                     Transaction(
                         bankAccountId = bankId!!,
                         date = date,
@@ -107,6 +107,11 @@ class TransactionAddEditView @Inject constructor(
                         description = description
                     )
                 )
+                if (result){
+                    _addEditTransactionState.value = _addEditTransactionState.value.copy(isSuccess = true)
+                }else{
+                    _addEditTransactionState.value = _addEditTransactionState.value.copy(error = "موجودی حساب کافی نیست")
+                }
 
             }
         } else {
@@ -121,8 +126,8 @@ class TransactionAddEditView @Inject constructor(
                         description = description
                     )
                 )
+                _addEditTransactionState.value = _addEditTransactionState.value.copy(isSuccess = true)
             }
         }
-        _addEditTransactionState.value = _addEditTransactionState.value.copy(isSuccess = true)
     }
 }
