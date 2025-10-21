@@ -23,4 +23,7 @@
     <string name="delete_receipt">حذف رسید</string>
     <string name="message_delete_receipt">آیا از حذف این رسید مطمئن هستید؟</string>
     <string name="message_delete_account">حساب حذف شد</string>
+    <string name="str_username">نام کاربری</string>
+    <string name="str_password">رمز عبور</string>
+    <string name="str_login">ورود به برنامه</string>
 </resources>
