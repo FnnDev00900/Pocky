@@ -4,12 +4,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fnndev.pocky.data.local.models.Transaction
+import com.fnndev.pocky.data.local.models.TransactionType
 import com.fnndev.pocky.data.local.repository.AccountRepository
 import com.fnndev.pocky.ui.screens.transaction.transaction_add_edit.TransactionAddEditEvent
 import com.fnndev.pocky.ui.screens.transaction.transaction_add_edit.TransactionAddEditState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -109,6 +111,7 @@ class TransactionAddEditView @Inject constructor(
                 )
                 if (result){
                     _addEditTransactionState.value = _addEditTransactionState.value.copy(isSuccess = true)
+                    _addEditTransactionState.update { state ->  state.copy(transactionType = TransactionType.INCOME) }
                 }else{
                     _addEditTransactionState.value = _addEditTransactionState.value.copy(error = "موجودی حساب کافی نیست")
                 }
@@ -127,6 +130,7 @@ class TransactionAddEditView @Inject constructor(
                     )
                 )
                 _addEditTransactionState.value = _addEditTransactionState.value.copy(isSuccess = true)
+                _addEditTransactionState.update { state ->  state.copy(transactionType = TransactionType.INCOME) }
             }
         }
     }

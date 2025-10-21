@@ -22,4 +22,5 @@
     <string name="str_search">جستوجو</string>
     <string name="delete_receipt">حذف رسید</string>
     <string name="message_delete_receipt">آیا از حذف این رسید مطمئن هستید؟</string>
+    <string name="message_delete_account">حساب حذف شد</string>
 </resources>
