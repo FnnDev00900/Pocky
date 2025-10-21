@@ -3,7 +3,7 @@ package com.fnndev.pocky.ui.viewmodel.bank_account
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fnndev.pocky.data.local.models.BankAccount
-import com.fnndev.pocky.data.local.repository.AccountRepository
+import com.fnndev.pocky.data.local.repository.account.AccountRepository
 import com.fnndev.pocky.navigation.ScreenRoute
 import com.fnndev.pocky.ui.screens.bank.bank_account.AccountUiState
 import com.fnndev.pocky.ui.screens.bank.bank_account.BankAccountUiEvent

@@ -1,11 +1,10 @@
 package com.fnndev.pocky.ui.viewmodel.transaction
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fnndev.pocky.data.local.models.Transaction
-import com.fnndev.pocky.data.local.repository.AccountRepository
+import com.fnndev.pocky.data.local.repository.account.AccountRepository
 import com.fnndev.pocky.navigation.ScreenRoute
 import com.fnndev.pocky.ui.screens.transaction.transaction_list.TransactionEvent
 import com.fnndev.pocky.ui.screens.transaction.transaction_list.TransactionUiState

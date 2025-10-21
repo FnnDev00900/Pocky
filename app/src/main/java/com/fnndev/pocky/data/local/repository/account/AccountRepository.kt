@@ -1,4 +1,4 @@
-package com.fnndev.pocky.data.local.repository
+package com.fnndev.pocky.data.local.repository.account
 
 import com.fnndev.pocky.data.local.models.BankAccount
 import com.fnndev.pocky.data.local.models.Transaction

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fnndev.pocky.data.local.models.Transaction
 import com.fnndev.pocky.data.local.models.TransactionType
-import com.fnndev.pocky.data.local.repository.AccountRepository
+import com.fnndev.pocky.data.local.repository.account.AccountRepository
 import com.fnndev.pocky.ui.screens.transaction.transaction_add_edit.TransactionAddEditEvent
 import com.fnndev.pocky.ui.screens.transaction.transaction_add_edit.TransactionAddEditState
 import dagger.hilt.android.lifecycle.HiltViewModel
