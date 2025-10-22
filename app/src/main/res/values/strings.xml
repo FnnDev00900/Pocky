@@ -25,5 +25,7 @@
     <string name="message_delete_account">حساب حذف شد</string>
     <string name="str_username">نام کاربری</string>
     <string name="str_password">رمز عبور</string>
+    <string name="str_confirm_password">تکرار رمز عبور</string>
     <string name="str_login">ورود به برنامه</string>
+    <string name="str_register">ثبت نام</string>
 </resources>

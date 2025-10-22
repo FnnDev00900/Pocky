@@ -49,9 +49,11 @@ import com.fnndev.pocky.ui.utils.UiEvent
 import com.fnndev.pocky.ui.viewmodel.login.LoginViewModel
 
 @Composable
-fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
+fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = hiltViewModel()) {
 
-    val state = viewModel.loginState.collectAsState()
+    val state = loginViewModel.loginState.collectAsState()
+
+    val listUsers = loginViewModel.listUsers.collectAsState(emptyList()).value
 
     val lotteComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.login))
     val lotteProgress by animateLottieCompositionAsState(
@@ -59,9 +61,10 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
         iterations = LottieConstants.IterateForever
     )
 
+    RegisterSheet()
 
     LaunchedEffect(true) {
-        viewModel.uiEvent.collect { event ->
+        loginViewModel.uiEvent.collect { event ->
             when (event) {
                 is UiEvent.Navigate -> {
                     navController.navigate(event.route){
@@ -103,7 +106,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                         OutlinedTextField(
                             value = state.value.username,
                             onValueChange = {
-                                viewModel.onEvent(
+                                loginViewModel.onEvent(
                                     LoginScreenEvent.OnUserNameChanged(
                                         it
                                     )
@@ -129,7 +132,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                         OutlinedTextField(
                             value = state.value.password,
                             onValueChange = {
-                                viewModel.onEvent(LoginScreenEvent.OnPasswordChanged(it))
+                                loginViewModel.onEvent(LoginScreenEvent.OnPasswordChanged(it))
                             },
                             modifier = Modifier.fillMaxWidth(0.95f),
                             label = {
@@ -152,7 +155,12 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
 
                         Button(
                             onClick = {
-                                viewModel.onEvent(LoginScreenEvent.OnLoginClicked)
+                                if (listUsers.isNotEmpty()){
+                                    loginViewModel.onEvent(LoginScreenEvent.OnLoginClicked)
+                                }
+                                else{
+                                    loginViewModel.onEvent(LoginScreenEvent.OnRegisterClicked)
+                                }
                             }
                         ) {
                             Icon(

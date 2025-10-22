@@ -5,6 +5,8 @@ sealed class LoginScreenEvent {
     data class OnPasswordChanged(val password: String) : LoginScreenEvent()
     object OnLoginClicked : LoginScreenEvent()
     object OnRegisterClicked : LoginScreenEvent()
+    data class RegisterSheet(val isShow: Boolean) : LoginScreenEvent()
+
 }
 
 

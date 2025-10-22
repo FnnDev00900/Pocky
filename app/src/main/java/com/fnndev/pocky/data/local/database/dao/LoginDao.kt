@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.fnndev.pocky.data.local.models.User
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LoginDao {
@@ -16,4 +17,7 @@ interface LoginDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addNewUser(user: User)
+
+    @Query("SELECT * FROM user_table")
+    fun getAllUsers(): Flow<List<User>>
 }

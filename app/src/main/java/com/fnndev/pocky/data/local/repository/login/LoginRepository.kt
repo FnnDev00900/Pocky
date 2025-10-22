@@ -1,6 +1,7 @@
 package com.fnndev.pocky.data.local.repository.login
 
 import com.fnndev.pocky.data.local.models.User
+import kotlinx.coroutines.flow.Flow
 
 interface LoginRepository {
     suspend fun getUser(userName: String, password: String): User?
@@ -8,5 +9,7 @@ interface LoginRepository {
     suspend fun getUserById(userId: Int): User
 
     suspend fun addNewUser(user: User)
+
+    fun getAllUsers(): Flow<List<User>>
 }
 

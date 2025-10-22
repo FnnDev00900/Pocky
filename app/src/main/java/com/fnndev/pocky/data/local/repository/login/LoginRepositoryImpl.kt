@@ -2,6 +2,7 @@ package com.fnndev.pocky.data.local.repository.login
 
 import com.fnndev.pocky.data.local.database.dao.LoginDao
 import com.fnndev.pocky.data.local.models.User
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(private val loginDao: LoginDao) : LoginRepository {
@@ -18,5 +19,9 @@ class LoginRepositoryImpl @Inject constructor(private val loginDao: LoginDao) : 
 
     override suspend fun addNewUser(user: User) {
         loginDao.addNewUser(user)
+    }
+
+    override fun getAllUsers(): Flow<List<User>> {
+        return loginDao.getAllUsers()
     }
 }

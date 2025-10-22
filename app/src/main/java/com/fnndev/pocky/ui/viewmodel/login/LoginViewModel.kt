@@ -2,7 +2,6 @@ package com.fnndev.pocky.ui.viewmodel.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fnndev.pocky.data.local.models.User
 import com.fnndev.pocky.data.local.repository.login.LoginRepository
 import com.fnndev.pocky.navigation.ScreenRoute
 import com.fnndev.pocky.ui.screens.login.LoginScreenEvent
@@ -25,6 +24,9 @@ class LoginViewModel @Inject constructor(private val repository: LoginRepository
     private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
+    private val _listUsers = repository.getAllUsers()
+    val listUsers = _listUsers
+
     fun onEvent(event: LoginScreenEvent) {
         when (event) {
             LoginScreenEvent.OnLoginClicked -> {
@@ -35,9 +37,16 @@ class LoginViewModel @Inject constructor(private val repository: LoginRepository
                 _loginState.value = _loginState.value.copy(password = event.password)
             }
 
-            LoginScreenEvent.OnRegisterClicked -> TODO()
+            LoginScreenEvent.OnRegisterClicked -> {
+                _loginState.value = _loginState.value.copy(registerSheet = true)
+            }
+
             is LoginScreenEvent.OnUserNameChanged -> {
                 _loginState.value = _loginState.value.copy(username = event.userName)
+            }
+
+            is LoginScreenEvent.RegisterSheet -> {
+                _loginState.value = _loginState.value.copy(registerSheet = event.isShow)
             }
         }
     }
@@ -78,9 +87,5 @@ class LoginViewModel @Inject constructor(private val repository: LoginRepository
                 errorMessage = "نام کاربری و رمز عبور را وارد کنید"
             )
         }
-    }
-
-    private fun addNewUser(user: User) {
-
     }
 }
