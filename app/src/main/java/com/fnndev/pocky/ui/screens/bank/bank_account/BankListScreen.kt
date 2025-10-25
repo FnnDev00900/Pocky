@@ -307,7 +307,7 @@ fun BankItem(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.Start
                     ) {
-                        Text(text = stringResource(R.string.str_account) + bank.name, fontFamily = VazirFont, fontSize = 20.sp)
+                        Text(text = stringResource(R.string.str_account) + " " + bank.name, fontFamily = VazirFont, fontSize = 20.sp)
                         Text(
                             text = stringResource(R.string.amount_account) + NumberFormat.getInstance()
                                 .format(bank.balance) + " " + stringResource(R.string.str_rial),
