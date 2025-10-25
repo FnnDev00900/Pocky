@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.fnndev.pocky.ui.screens.bank.bank_account.BankListScreen
 import com.fnndev.pocky.ui.screens.bank.bank_add_edit.BankAddEditScreen
-import com.fnndev.pocky.ui.screens.login.LoginScreen
+import com.fnndev.pocky.ui.screens.login.login.LoginScreen
 import com.fnndev.pocky.ui.screens.transaction.transaction_add_edit.TransactionAddEditScreen
 import com.fnndev.pocky.ui.screens.transaction.transaction_list.TransactionScreen
 

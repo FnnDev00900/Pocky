@@ -4,9 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fnndev.pocky.data.local.models.User
 import com.fnndev.pocky.data.local.repository.login.LoginRepository
-import com.fnndev.pocky.ui.screens.login.LoginScreenState
-import com.fnndev.pocky.ui.screens.login.RegisterEvent
-import com.fnndev.pocky.ui.screens.login.RegisterState
+import com.fnndev.pocky.ui.screens.login.register.RegisterEvent
+import com.fnndev.pocky.ui.screens.login.register.RegisterState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

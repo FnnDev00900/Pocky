@@ -1,4 +1,4 @@
-package com.fnndev.pocky.ui.screens.login
+package com.fnndev.pocky.ui.screens.login.login
 
 data class LoginScreenState(
     val username: String = "",

@@ -1,4 +1,4 @@
-package com.fnndev.pocky.ui.screens.login
+package com.fnndev.pocky.ui.screens.login.login
 
 sealed class LoginScreenEvent {
     data class OnUserNameChanged(val userName: String) : LoginScreenEvent()

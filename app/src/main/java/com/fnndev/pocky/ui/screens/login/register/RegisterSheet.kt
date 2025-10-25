@@ -1,4 +1,4 @@
-package com.fnndev.pocky.ui.screens.login
+package com.fnndev.pocky.ui.screens.login.register
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.fnndev.pocky.R
+import com.fnndev.pocky.ui.screens.login.login.LoginScreenEvent
 import com.fnndev.pocky.ui.theme.ExpenseRed
 import com.fnndev.pocky.ui.theme.VazirFont
 import com.fnndev.pocky.ui.viewmodel.login.LoginViewModel

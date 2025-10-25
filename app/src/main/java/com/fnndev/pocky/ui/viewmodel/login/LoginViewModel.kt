@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fnndev.pocky.data.local.repository.login.LoginRepository
 import com.fnndev.pocky.navigation.ScreenRoute
-import com.fnndev.pocky.ui.screens.login.LoginScreenEvent
-import com.fnndev.pocky.ui.screens.login.LoginScreenState
+import com.fnndev.pocky.ui.screens.login.login.LoginScreenEvent
+import com.fnndev.pocky.ui.screens.login.login.LoginScreenState
 import com.fnndev.pocky.ui.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

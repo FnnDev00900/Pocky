@@ -1,6 +1,6 @@
 package com.fnndev.pocky.ui.screens.bank.bank_account
 
-import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -18,12 +18,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -73,7 +77,6 @@ import com.fnndev.pocky.ui.viewmodel.bank_account.BankAccountViewModel
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 
-@SuppressLint("UnrememberedMutableState")
 @Composable
 fun BankListScreen(
     navController: NavController,
@@ -84,6 +87,8 @@ fun BankListScreen(
 
     val snackBarHostState = remember { SnackbarHostState() }
     val scopeSnackBar = rememberCoroutineScope()
+
+    var isDropDonMenu by remember { mutableStateOf(false) }
 
     val lotteComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.bank_list))
     val lotteProgress by animateLottieCompositionAsState(
@@ -166,7 +171,8 @@ fun BankListScreen(
                             OutlinedTextField(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                                    .weight(0.9f),
                                 value = uiState.searchQuery,
                                 onValueChange = viewModel::onSearchQueryChanged,
                                 label = { Text(stringResource(R.string.search_account)) },
@@ -183,6 +189,23 @@ fun BankListScreen(
                                     imeAction = ImeAction.Search
                                 )
                             )
+                            Box(modifier = Modifier.weight(0.1f)) {
+                                IconButton(onClick = { isDropDonMenu = true }) {
+                                    Image(
+                                        imageVector = Icons.Default.Settings,
+                                        contentDescription = "Settings"
+                                    )
+                                }
+                                DropdownMenu(
+                                    expanded = isDropDonMenu,
+                                    onDismissRequest = { isDropDonMenu = false }) {
+                                    DropdownMenuItem(
+                                        text = { Text("تغییر رمز", fontFamily = VazirFont) },
+                                        onClick = {
+                                            isDropDonMenu = false
+                                        })
+                                }
+                            }
                         }
                         Row(
                             modifier = Modifier
@@ -204,7 +227,11 @@ fun BankListScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Start
                         ) {
-                            Text(text = stringResource(R.string.list_accounts), fontSize = 22.sp, fontFamily = VazirFont)
+                            Text(
+                                text = stringResource(R.string.list_accounts),
+                                fontSize = 22.sp,
+                                fontFamily = VazirFont
+                            )
                         }
                         LazyColumn(
                             modifier = Modifier
@@ -260,7 +287,11 @@ fun BankItem(
                             showDialog = false
                         }
                     ) {
-                        Text(text = stringResource(R.string.str_yes), fontFamily = VazirFont, color = ExpenseRed)
+                        Text(
+                            text = stringResource(R.string.str_yes),
+                            fontFamily = VazirFont,
+                            color = ExpenseRed
+                        )
                     }
                 },
                 dismissButton = {
@@ -307,7 +338,11 @@ fun BankItem(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.Start
                     ) {
-                        Text(text = stringResource(R.string.str_account) + " " + bank.name, fontFamily = VazirFont, fontSize = 20.sp)
+                        Text(
+                            text = stringResource(R.string.str_account) + " " + bank.name,
+                            fontFamily = VazirFont,
+                            fontSize = 20.sp
+                        )
                         Text(
                             text = stringResource(R.string.amount_account) + NumberFormat.getInstance()
                                 .format(bank.balance) + " " + stringResource(R.string.str_rial),
@@ -343,4 +378,3 @@ fun BankItem(
         }
     }
 }
-

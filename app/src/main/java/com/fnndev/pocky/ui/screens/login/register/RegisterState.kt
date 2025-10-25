@@ -1,4 +1,4 @@
-package com.fnndev.pocky.ui.screens.login
+package com.fnndev.pocky.ui.screens.login.register
 
 data class RegisterState (
     val userName: String = "",

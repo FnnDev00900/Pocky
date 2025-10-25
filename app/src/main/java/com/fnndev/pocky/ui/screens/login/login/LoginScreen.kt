@@ -1,6 +1,5 @@
-package com.fnndev.pocky.ui.screens.login
+package com.fnndev.pocky.ui.screens.login.login
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -50,6 +49,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.fnndev.pocky.R
+import com.fnndev.pocky.ui.screens.login.register.RegisterSheet
 import com.fnndev.pocky.ui.theme.ExpenseRed
 import com.fnndev.pocky.ui.theme.VazirFont
 import com.fnndev.pocky.ui.utils.UiEvent

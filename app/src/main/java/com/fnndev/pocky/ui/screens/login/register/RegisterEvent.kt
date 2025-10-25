@@ -1,4 +1,4 @@
-package com.fnndev.pocky.ui.screens.login
+package com.fnndev.pocky.ui.screens.login.register
 
 sealed class RegisterEvent {
     data class OnUserNameChange(val userName: String): RegisterEvent()
