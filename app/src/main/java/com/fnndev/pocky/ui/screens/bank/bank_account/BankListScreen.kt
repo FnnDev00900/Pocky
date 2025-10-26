@@ -315,7 +315,10 @@ fun BankItem(
                     Text(text = stringResource(R.string.delete_account), fontFamily = VazirFont)
                 },
                 text = {
-                    Text("آیا حساب ${bank.name} حذف شود", fontFamily = VazirFont)
+                    Text(
+                        "با حذف حساب تمام رسید ها نیز حذف می شوند! آیا حساب ${bank.name} حذف شود؟",
+                        fontFamily = VazirFont
+                    )
                 }
             )
         }

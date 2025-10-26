@@ -16,7 +16,7 @@ class AccountRepositoryImpl @Inject constructor(
         return bankAccountDao.getAllBankAccounts()
     }
 
-    override suspend fun getBankById(id: Int): BankAccount{
+    override suspend fun getBankById(id: Int): BankAccount {
         return bankAccountDao.getBankAccountById(id)
     }
 
@@ -111,5 +111,9 @@ class AccountRepositoryImpl @Inject constructor(
         }
         bankAccountDao.updateBankAccount(account.copy(balance = newBalance))
         return true
+    }
+
+    override suspend fun deleteTransactionsByBankAccountId(bankAccountId: Int) {
+        transactionDao.deleteTransactionsByBankId(bankAccountId)
     }
 }

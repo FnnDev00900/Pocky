@@ -3,6 +3,7 @@ package com.fnndev.pocky.ui.viewmodel.bank_account
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fnndev.pocky.data.local.models.BankAccount
+import com.fnndev.pocky.data.local.models.Transaction
 import com.fnndev.pocky.data.local.repository.account.AccountRepository
 import com.fnndev.pocky.data.local.repository.login.LoginRepository
 import com.fnndev.pocky.navigation.ScreenRoute
@@ -39,6 +40,7 @@ class BankAccountViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     private var deletedBankAccount: BankAccount? = null
+    private var listDeletedTransactions: List<Transaction> = emptyList()
 
     init {
         observeAccounts()
@@ -75,7 +77,9 @@ class BankAccountViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     try {
                         deletedBankAccount = event.bankAccount
+                        listDeletedTransactions = repository.getTransactionsByBankAccountId(event.bankAccount.id).first()
                         repository.deleteBank(event.bankAccount)
+                        repository.deleteTransactionsByBankAccountId(event.bankAccount.id)
                         sendUiEvent(
                             ShowSnackBar(
                                 message = "بانک حذف شد",
@@ -105,7 +109,11 @@ class BankAccountViewModel @Inject constructor(
                 deletedBankAccount?.let { bank ->
                     viewModelScope.launch {
                         repository.insertBank(bank)
+                        listDeletedTransactions.forEach {
+                            repository.insertTransaction(it)
+                        }
                         deletedBankAccount = null
+                        listDeletedTransactions = emptyList()
                     }
                 }
             }
