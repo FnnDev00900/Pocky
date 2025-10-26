@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fnndev.pocky.data.local.models.BankAccount
 import com.fnndev.pocky.data.local.repository.account.AccountRepository
+import com.fnndev.pocky.data.local.repository.login.LoginRepository
 import com.fnndev.pocky.navigation.ScreenRoute
 import com.fnndev.pocky.ui.screens.bank.bank_account.AccountUiState
 import com.fnndev.pocky.ui.screens.bank.bank_account.BankAccountUiEvent
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -24,7 +26,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BankAccountViewModel @Inject constructor(private val repository: AccountRepository) :
+class BankAccountViewModel @Inject constructor(
+    private val repository: AccountRepository,
+    private val loginRepository: LoginRepository
+) :
     ViewModel() {
 
     private val _accountUiState = MutableStateFlow(AccountUiState())
@@ -107,6 +112,30 @@ class BankAccountViewModel @Inject constructor(private val repository: AccountRe
 
             is BankAccountUiEvent.OnReceiptClicked -> {
                 sendUiEvent(Navigate(ScreenRoute.ListTransactionScreen.route + "/${event.bankAccountId}"))
+            }
+
+            is BankAccountUiEvent.ChangePassword -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val user = loginRepository.getAllUsers().first().firstOrNull()
+
+                    if (user == null) {
+                        sendUiEvent(ShowSnackBar(message = "کاربری یافت نشد"))
+                        return@launch
+                    }
+
+                    if (event.newPass.isBlank()) {
+                        sendUiEvent(ShowSnackBar(message = "رمز عبور جدید نمی‌تواند خالی باشد"))
+                        return@launch
+                    }
+
+                    if (user.password == event.currentPass) {
+                        val updatedUser = user.copy(password = event.newPass)
+                        loginRepository.updateUser(updatedUser)
+                        sendUiEvent(ShowSnackBar(message = "رمز عبور با موفقیت تغییر کرد"))
+                    } else {
+                        sendUiEvent(ShowSnackBar(message = "رمز عبور فعلی اشتباه است"))
+                    }
+                }
             }
         }
     }

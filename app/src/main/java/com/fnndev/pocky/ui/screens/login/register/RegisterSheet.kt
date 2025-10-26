@@ -134,10 +134,11 @@ fun RegisterSheet(
                                 Icons.Filled.Visibility
                             else Icons.Filled.VisibilityOff
 
-                            val description = if (passwordVisible) "Hide password" else "Show password"
+                            val description =
+                                if (passwordVisible) "Hide password" else "Show password"
 
-                            IconButton(onClick = {passwordVisible = !passwordVisible}){
-                                Icon(imageVector  = image, contentDescription = description)
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(imageVector = image, contentDescription = description)
                             }
                         }
                     )
@@ -173,17 +174,21 @@ fun RegisterSheet(
                                 Icons.Filled.Visibility
                             else Icons.Filled.VisibilityOff
 
-                            val description = if (confirmPasswordVisible) "Hide password" else "Show password"
+                            val description =
+                                if (confirmPasswordVisible) "Hide password" else "Show password"
 
-                            IconButton(onClick = {confirmPasswordVisible = !confirmPasswordVisible}){
-                                Icon(imageVector  = image, contentDescription = description)
+                            IconButton(onClick = {
+                                confirmPasswordVisible = !confirmPasswordVisible
+                            }) {
+                                Icon(imageVector = image, contentDescription = description)
                             }
                         }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    OutlinedButton(onClick = {
-                        registerViewModel.onEvent(RegisterEvent.OnRegisterClick)
-                    }) {
+                    OutlinedButton(
+                        modifier = Modifier.fillMaxWidth(0.9f), onClick = {
+                            registerViewModel.onEvent(RegisterEvent.OnRegisterClick)
+                        }) {
                         Text(text = "ثبت")
                     }
                     if (registerState.value.errorMessage != "") {

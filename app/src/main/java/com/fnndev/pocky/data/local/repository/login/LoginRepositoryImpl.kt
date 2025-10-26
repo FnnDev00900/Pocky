@@ -21,6 +21,10 @@ class LoginRepositoryImpl @Inject constructor(private val loginDao: LoginDao) : 
         loginDao.addNewUser(user)
     }
 
+    override suspend fun updateUser(user: User) {
+        loginDao.updateUser(user)
+    }
+
     override fun getAllUsers(): Flow<List<User>> {
         return loginDao.getAllUsers()
     }

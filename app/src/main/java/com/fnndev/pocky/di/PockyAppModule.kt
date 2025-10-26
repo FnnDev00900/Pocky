@@ -33,7 +33,7 @@ object PockyAppModule {
     @Provides
     @Singleton
     fun provideAccountRepository(db: AccountDatabase): AccountRepository {
-        return AccountRepositoryImpl(db.bankAccountDao, db.transactionDao)
+        return AccountRepositoryImpl(bankAccountDao = db.bankAccountDao, transactionDao = db.transactionDao)
     }
 
     @Provides

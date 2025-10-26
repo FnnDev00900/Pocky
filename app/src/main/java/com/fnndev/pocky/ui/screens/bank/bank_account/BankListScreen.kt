@@ -74,8 +74,8 @@ import com.fnndev.pocky.ui.theme.TextSecondary
 import com.fnndev.pocky.ui.theme.VazirFont
 import com.fnndev.pocky.ui.utils.UiEvent
 import com.fnndev.pocky.ui.viewmodel.bank_account.BankAccountViewModel
-import kotlinx.coroutines.launch
 import java.text.NumberFormat
+import kotlinx.coroutines.launch
 
 @Composable
 fun BankListScreen(
@@ -89,6 +89,17 @@ fun BankListScreen(
     val scopeSnackBar = rememberCoroutineScope()
 
     var isDropDonMenu by remember { mutableStateOf(false) }
+    var showChangePasswordDialog by remember { mutableStateOf(false) }
+
+    if (showChangePasswordDialog) {
+        ChangePasswordDialog(
+            onConfirm = { currentPassword, newPassword ->
+                viewModel.onEvent(BankAccountUiEvent.ChangePassword(currentPassword, newPassword))
+                showChangePasswordDialog = false
+            },
+            onDismiss = { showChangePasswordDialog = false }
+        )
+    }
 
     val lotteComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.bank_list))
     val lotteProgress by animateLottieCompositionAsState(
@@ -203,6 +214,7 @@ fun BankListScreen(
                                         text = { Text("تغییر رمز", fontFamily = VazirFont) },
                                         onClick = {
                                             isDropDonMenu = false
+                                            showChangePasswordDialog = true
                                         })
                                 }
                             }

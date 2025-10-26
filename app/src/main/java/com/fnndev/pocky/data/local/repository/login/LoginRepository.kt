@@ -10,6 +10,7 @@ interface LoginRepository {
 
     suspend fun addNewUser(user: User)
 
+    suspend fun updateUser(user: User)
+
     fun getAllUsers(): Flow<List<User>>
 }
-
