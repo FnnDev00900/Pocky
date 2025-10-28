@@ -81,4 +81,5 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.lottie.compose)
     implementation("com.github.razaghimahdi:Compose-Persian-Date-Picker:1.1.1")
+    implementation("androidx.biometric:biometric:1.4.0-alpha04")
 }

@@ -48,6 +48,18 @@ class LoginViewModel @Inject constructor(private val repository: LoginRepository
             is LoginScreenEvent.RegisterSheet -> {
                 _loginState.value = _loginState.value.copy(registerSheet = event.isShow)
             }
+
+            LoginScreenEvent.OnFingerprintLoginClicked -> {
+                viewModelScope.launch {
+                    sendUiEvent(
+                        UiEvent.Navigate(
+                            route = ScreenRoute.ListBankScreen.route,
+                            popUpTo = ScreenRoute.LoginScreen.route,
+                            inclusive = true
+                        )
+                    )
+                }
+            }
         }
     }
 

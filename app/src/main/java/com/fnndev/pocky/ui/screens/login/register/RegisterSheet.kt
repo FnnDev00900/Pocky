@@ -2,6 +2,7 @@ package com.fnndev.pocky.ui.screens.login.register
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -184,6 +186,28 @@ fun RegisterSheet(
                             }
                         }
                     )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = "فعال‌سازی اثر انگشت")
+                        Switch(
+                            checked = registerState.value.isFingerprintEnabled,
+                            onCheckedChange = {
+                                registerViewModel.onEvent(
+                                    RegisterEvent.OnFingerprintEnableChanged(
+                                        it
+                                    )
+                                )
+                            }
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedButton(
                         modifier = Modifier.fillMaxWidth(0.9f), onClick = {

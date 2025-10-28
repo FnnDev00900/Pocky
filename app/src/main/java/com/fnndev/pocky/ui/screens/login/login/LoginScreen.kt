@@ -1,5 +1,9 @@
 package com.fnndev.pocky.ui.screens.login.login
 
+import android.annotation.SuppressLint
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
+import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
@@ -33,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -52,9 +58,12 @@ import com.fnndev.pocky.R
 import com.fnndev.pocky.ui.screens.login.register.RegisterSheet
 import com.fnndev.pocky.ui.theme.ExpenseRed
 import com.fnndev.pocky.ui.theme.VazirFont
+import com.fnndev.pocky.ui.utils.BiometricPromptManager
+import com.fnndev.pocky.ui.utils.BiometricPromptManager.*
 import com.fnndev.pocky.ui.utils.UiEvent
 import com.fnndev.pocky.ui.viewmodel.login.LoginViewModel
 
+@SuppressLint("ContextCastToActivity")
 @Composable
 fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = hiltViewModel()) {
 
@@ -68,15 +77,30 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = h
         iterations = LottieConstants.IterateForever
     )
 
+    val activity = LocalContext.current as AppCompatActivity
+
+    val promptManager by lazy {
+        BiometricPromptManager(activity)
+    }
+    val biometricResult by promptManager.promptResult.collectAsState(initial = null)
+
+    LaunchedEffect(biometricResult) {
+        biometricResult?.let {
+            if (it is BiometricResult.AuthenticationSucceeded) {
+                loginViewModel.onEvent(LoginScreenEvent.OnFingerprintLoginClicked)
+            }
+        }
+    }
+
     RegisterSheet()
 
     LaunchedEffect(true) {
         loginViewModel.uiEvent.collect { event ->
             when (event) {
                 is UiEvent.Navigate -> {
-                    navController.navigate(event.route){
-                        event.popUpTo?.let {popupToRoute->
-                            popUpTo(popupToRoute){
+                    navController.navigate(event.route) {
+                        event.popUpTo?.let { popupToRoute ->
+                            popUpTo(popupToRoute) {
                                 inclusive = event.inclusive
                             }
                         }
@@ -163,10 +187,11 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = h
                                     Icons.Filled.Visibility
                                 else Icons.Filled.VisibilityOff
 
-                                val description = if (passwordVisible) "Hide password" else "Show password"
+                                val description =
+                                    if (passwordVisible) "Hide password" else "Show password"
 
-                                IconButton(onClick = {passwordVisible = !passwordVisible}){
-                                    Icon(imageVector  = image, contentDescription = description)
+                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                    Icon(imageVector = image, contentDescription = description)
                                 }
                             }
                         )
@@ -175,10 +200,9 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = h
 
                         Button(
                             onClick = {
-                                if (listUsers.isNotEmpty()){
+                                if (listUsers.isNotEmpty()) {
                                     loginViewModel.onEvent(LoginScreenEvent.OnLoginClicked)
-                                }
-                                else{
+                                } else {
                                     loginViewModel.onEvent(LoginScreenEvent.OnRegisterClicked)
                                 }
                             }
@@ -192,6 +216,33 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = h
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
+
+                        if (listUsers.any { it.isFingerprintEnabled }) {
+                            Image(
+                                imageVector = Icons.Default.Fingerprint,
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(64.dp)
+                                    .clickable(
+                                        onClick = {
+                                            promptManager.showBiometricPrompt(
+                                                title = "ورود به برنامه",
+                                                description = "ورود با اثر انگشت"
+                                            )
+                                        }
+                                    )
+                            )
+                        }
+
+                        biometricResult?.let { result ->
+                            if (result is BiometricResult.AuthenticationError) {
+                                Text(
+                                    text = result.error,
+                                    fontFamily = VazirFont,
+                                    color = ExpenseRed
+                                )
+                            }
+                        }
 
                         if (state.value.errorMessage != null) {
                             Text(

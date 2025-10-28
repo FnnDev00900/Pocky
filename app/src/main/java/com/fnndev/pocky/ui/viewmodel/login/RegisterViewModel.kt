@@ -28,11 +28,15 @@ class RegisterViewModel @Inject constructor(private val repository: LoginReposit
             is RegisterEvent.OnUserNameChange -> _registerState.value =
                 _registerState.value.copy(userName = event.userName)
 
+            is RegisterEvent.OnFingerprintEnableChanged -> _registerState.value =
+                _registerState.value.copy(isFingerprintEnabled = event.isEnabled)
+
             RegisterEvent.OnRegisterClick -> {
                 if (isValidateRegister()) {
                     val newUser = User(
                         userName = _registerState.value.userName,
-                        password = _registerState.value.password
+                        password = _registerState.value.password,
+                        isFingerprintEnabled = _registerState.value.isFingerprintEnabled
                     )
                     registerUser(newUser)
                     _registerState.value = _registerState.value.copy(
