@@ -94,7 +94,7 @@ fun TransactionScreen(
                             actionLabel = event.action,
                             duration = SnackbarDuration.Short
                         )
-                        if (result == SnackbarResult.ActionPerformed){
+                        if (result == SnackbarResult.ActionPerformed) {
                             viewModel.onEvent(TransactionEvent.OnUndoDeleteClick)
                         }
                     }
@@ -116,7 +116,10 @@ fun TransactionScreen(
             FloatingActionButton(onClick = {
                 viewModel.onEvent(TransactionEvent.OnAddReceiptClicked)
             }) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.add_receipt))
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(R.string.add_receipt)
+                )
             }
         },
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
@@ -153,7 +156,10 @@ fun TransactionScreen(
                         textStyle = TextStyle(fontFamily = KoodakFont),
                         singleLine = true,
                         maxLines = 1,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Search)
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Search
+                        )
                     )
                 }
 
@@ -196,7 +202,13 @@ fun TransactionListItem(
                             onTransactionDeleteClick(transaction)
                             showDialog = false
                         }
-                    ) { Text(text = stringResource(R.string.str_yes), fontFamily = VazirFont, color = ExpenseRed) }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.str_yes),
+                            fontFamily = VazirFont,
+                            color = ExpenseRed
+                        )
+                    }
                 },
                 dismissButton = {
                     TextButton(
@@ -247,9 +259,13 @@ fun TransactionListItem(
                 ) {
                     Text("مبلغ:", fontFamily = VazirFont)
                     Text(
-                        text = if (transaction.type == TransactionType.INCOME) NumberFormat.getInstance()
-                            .format(transaction.amount) + "+ ريال" else NumberFormat.getInstance()
-                            .format(transaction.amount) + "- ريال",
+                        text = if (transaction.type == TransactionType.INCOME) {
+                            NumberFormat.getInstance()
+                                .format(transaction.amount) + "+ ريال"
+                        } else {
+                            NumberFormat.getInstance()
+                                .format(transaction.amount) + "- ريال"
+                        },
                         color = if (transaction.type == TransactionType.INCOME) IncomeGreen else ExpenseRed,
                         fontFamily = KoodakFont
                     )
