@@ -1,11 +1,14 @@
 package com.fnndev.pocky.ui.screens.bank.bank_account
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -14,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.input.ImeAction
@@ -22,7 +26,12 @@ import androidx.compose.ui.unit.LayoutDirection
 import com.fnndev.pocky.ui.theme.VazirFont
 
 @Composable
-fun ChangePasswordDialog(onConfirm: (String, String) -> Unit, onDismiss: () -> Unit) {
+fun ChangePasswordDialog(
+    onConfirm: (String, String) -> Unit,
+    onDismiss: () -> Unit,
+    onFingerprintStateChange: (Boolean) -> Unit,
+    fingerprintState: Boolean
+) {
     var currentPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -86,6 +95,20 @@ fun ChangePasswordDialog(onConfirm: (String, String) -> Unit, onDismiss: () -> U
                             }
                         }
                     )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(0.95f),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "اثر انگشت", fontFamily = VazirFont)
+                        Switch(
+                            checked = fingerprintState,
+                            onCheckedChange = {
+                                onFingerprintStateChange(it)
+                            }
+                        )
+                    }
                 }
 
             }

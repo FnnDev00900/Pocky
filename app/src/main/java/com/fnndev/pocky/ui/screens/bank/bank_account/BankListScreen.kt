@@ -74,8 +74,8 @@ import com.fnndev.pocky.ui.theme.TextSecondary
 import com.fnndev.pocky.ui.theme.VazirFont
 import com.fnndev.pocky.ui.utils.UiEvent
 import com.fnndev.pocky.ui.viewmodel.bank_account.BankAccountViewModel
-import java.text.NumberFormat
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 
 @Composable
 fun BankListScreen(
@@ -97,7 +97,11 @@ fun BankListScreen(
                 viewModel.onEvent(BankAccountUiEvent.ChangePassword(currentPassword, newPassword))
                 showChangePasswordDialog = false
             },
-            onDismiss = { showChangePasswordDialog = false }
+            onDismiss = { showChangePasswordDialog = false },
+            onFingerprintStateChange = {
+                viewModel.onEvent(BankAccountUiEvent.OnFingerprintClick())
+            },
+            fingerprintState = uiState.fingerprint
         )
     }
 

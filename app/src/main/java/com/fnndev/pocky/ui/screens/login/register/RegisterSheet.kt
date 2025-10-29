@@ -53,7 +53,6 @@ fun RegisterSheet(
     loginViewModel: LoginViewModel = hiltViewModel(),
     registerViewModel: RegisterViewModel = hiltViewModel()
 ) {
-
     val loginState = loginViewModel.loginState.collectAsState()
     val registerState = registerViewModel.registerState.collectAsState()
     var passwordVisible by remember { mutableStateOf(false) }

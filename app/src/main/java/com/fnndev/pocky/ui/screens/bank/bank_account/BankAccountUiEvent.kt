@@ -8,6 +8,7 @@ sealed class BankAccountUiEvent {
     data class BankAccountSelected(val bankAccount: BankAccount) : BankAccountUiEvent()
     data class OnReceiptClicked(val bankAccountId: Int) : BankAccountUiEvent()
     data class ChangePassword(val currentPass: String, val newPass: String) : BankAccountUiEvent()
+    class OnFingerprintClick : BankAccountUiEvent()
     object ObserveAccounts : BankAccountUiEvent()
     object AddNewBankAccountClicked : BankAccountUiEvent()
     object OnUndoDeleteClick : BankAccountUiEvent()

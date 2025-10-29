@@ -44,6 +44,11 @@ class BankAccountViewModel @Inject constructor(
 
     init {
         observeAccounts()
+        viewModelScope.launch {
+            loginRepository.getAllUsers().first().firstOrNull()?.let { user ->
+                _accountUiState.update { it.copy(fingerprint = user.isFingerprintEnabled) }
+            }
+        }
     }
 
     fun observeAccounts() {
@@ -77,7 +82,8 @@ class BankAccountViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     try {
                         deletedBankAccount = event.bankAccount
-                        listDeletedTransactions = repository.getTransactionsByBankAccountId(event.bankAccount.id).first()
+                        listDeletedTransactions =
+                            repository.getTransactionsByBankAccountId(event.bankAccount.id).first()
                         repository.deleteBank(event.bankAccount)
                         repository.deleteTransactionsByBankAccountId(event.bankAccount.id)
                         sendUiEvent(
@@ -142,6 +148,17 @@ class BankAccountViewModel @Inject constructor(
                         sendUiEvent(ShowSnackBar(message = "رمز عبور با موفقیت تغییر کرد"))
                     } else {
                         sendUiEvent(ShowSnackBar(message = "رمز عبور فعلی اشتباه است"))
+                    }
+                }
+            }
+
+            is BankAccountUiEvent.OnFingerprintClick -> {
+                viewModelScope.launch {
+                    loginRepository.getAllUsers().first().firstOrNull()?.let { user ->
+                        val updatedUser =
+                            user.copy(isFingerprintEnabled = !user.isFingerprintEnabled)
+                        loginRepository.updateUser(updatedUser)
+                        _accountUiState.update { it.copy(fingerprint = updatedUser.isFingerprintEnabled) }
                     }
                 }
             }

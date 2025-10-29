@@ -1,5 +1,6 @@
 package com.fnndev.pocky.ui.screens.bank.bank_add_edit
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -39,6 +40,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.fnndev.pocky.R
+import com.fnndev.pocky.ui.theme.BackgroundWhite
 import com.fnndev.pocky.ui.theme.ExpenseRed
 import com.fnndev.pocky.ui.theme.KoodakFont
 import com.fnndev.pocky.ui.theme.VazirFont
@@ -65,7 +67,8 @@ fun BankAddEditScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .imePadding()
-                .navigationBarsPadding(),
+                .navigationBarsPadding()
+                .background(BackgroundWhite),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -188,7 +191,6 @@ fun BankBalanceField(
             .padding(horizontal = 16.dp),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
-        textStyle = TextStyle(fontFamily = KoodakFont)
-        , readOnly = isUpdate
+        textStyle = TextStyle(fontFamily = KoodakFont), readOnly = isUpdate
     )
 }

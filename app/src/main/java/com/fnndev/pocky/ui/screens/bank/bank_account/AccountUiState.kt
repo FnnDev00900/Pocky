@@ -8,5 +8,6 @@ data class AccountUiState(
     val searchQuery: String = "",
     val selectedBankAccountId: Int? = null,
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val fingerprint: Boolean = false
 )
