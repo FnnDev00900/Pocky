@@ -40,6 +40,13 @@ class AccountRepositoryImpl @Inject constructor(
         return transactionDao.getTransactionsByBankAccountId(bankAccountId)
     }
 
+    override fun getTransactionsByDate(
+        startDate: String,
+        endDate: String
+    ): Flow<List<Transaction>> {
+        return transactionDao.getTransactionsByDate(startDate, endDate)
+    }
+
     override suspend fun getTransactionById(id: Int): Transaction? {
         return transactionDao.getTransactionById(id)
     }

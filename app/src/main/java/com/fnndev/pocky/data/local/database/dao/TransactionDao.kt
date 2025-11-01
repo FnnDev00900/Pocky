@@ -33,4 +33,7 @@ interface TransactionDao {
     @Query("DELETE FROM transactions WHERE bankAccountId = :bankAccountId")
     suspend fun deleteTransactionsByBankId(bankAccountId: Int)
 
+    @Query("SELECT * FROM transactions WHERE date BETWEEN :startDate AND :endDate ORDER BY date DESC")
+    fun getTransactionsByDate(startDate: String,endDate: String): Flow<List<Transaction>>
+
 }

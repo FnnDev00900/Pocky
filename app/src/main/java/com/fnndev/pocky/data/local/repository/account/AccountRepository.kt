@@ -13,6 +13,7 @@ interface AccountRepository {
 
     fun getAllTransactions(): Flow<List<Transaction>>
     fun getTransactionsByBankAccountId(bankAccountId: Int): Flow<List<Transaction>>
+    fun getTransactionsByDate(startDate: String,endDate: String): Flow<List<Transaction>>
     suspend fun getTransactionById(id: Int): Transaction?
     suspend fun updateTransaction(transaction: Transaction)
     suspend fun deleteTransaction(transaction: Transaction)
