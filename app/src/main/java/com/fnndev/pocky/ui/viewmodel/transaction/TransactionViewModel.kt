@@ -64,8 +64,7 @@ class TransactionViewModel @Inject constructor(
                         deletedTransaction = event.transaction
                         repository.deleteTransaction(event.transaction)
                         sendUiEvent(ShowSnackBar(message = "رسید حذف شد", action = "بازگردانی"))
-                    }
-                    catch (e: Exception){
+                    } catch (e: Exception) {
                         _transactionState.value = _transactionState.value.copy(error = e.message)
                     }
                 }
@@ -81,17 +80,21 @@ class TransactionViewModel @Inject constructor(
             }
 
             TransactionEvent.OnUndoDeleteClick -> {
-                if (deletedTransaction != null){
+                if (deletedTransaction != null) {
                     viewModelScope.launch {
                         repository.insertTransaction(deletedTransaction!!)
                         deletedTransaction = null
                     }
                 }
             }
+
+            TransactionEvent.OnReportClick -> {
+                sendUiEvent(Navigate(ScreenRoute.ReportTransactionScreen.route))
+            }
         }
     }
 
-    fun onSearchQueryChanged(query: String){
+    fun onSearchQueryChanged(query: String) {
         val filtered = _transactionState.value.listTransaction.filter {
             it.date.contains(query, ignoreCase = true)
         }

@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,6 +36,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.fnndev.pocky.ui.screens.transaction.transaction_list.TransactionListItem
 import com.fnndev.pocky.ui.theme.KoodakFont
 import com.fnndev.pocky.ui.theme.VazirFont
 import com.fnndev.pocky.ui.viewmodel.transaction.TransactionReportViewModel
@@ -47,6 +50,7 @@ import kotlinx.coroutines.launch
 fun TransactionReportScreen(viewModel: TransactionReportViewModel = hiltViewModel()) {
 
     val state = viewModel.state.collectAsState()
+    val listFilterTransaction = state.value.transactionList
 
     val coroutine = rememberCoroutineScope()
     val rememberPersianDialogDatePicker = rememberDialogDatePicker()
@@ -187,10 +191,21 @@ fun TransactionReportScreen(viewModel: TransactionReportViewModel = hiltViewMode
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
+                OutlinedButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    onClick = {
+                        val sDate = state.value.startDate
+                        val eDate = state.value.endDate
+                        viewModel.getTransactionsByDate(startDate = sDate, endDate = eDate)
+                    }
+                ) {
+                    Text(text = "نمایش گزارش", fontFamily = VazirFont)
+                }
                 Button(
                     onClick = {
-                        val sDate = state.value.startDate.split("/")
-                        val eDate = state.value.endDate.split("/")
+
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -204,7 +219,13 @@ fun TransactionReportScreen(viewModel: TransactionReportViewModel = hiltViewMode
                         .fillMaxSize()
                         .padding(8.dp)
                 ) {
-
+                    items(listFilterTransaction) { transaction ->
+                        TransactionListItem(
+                            transaction = transaction,
+                            onTransactionItemClick = {},
+                            onTransactionDeleteClick = {}
+                        )
+                    }
                 }
 
             }

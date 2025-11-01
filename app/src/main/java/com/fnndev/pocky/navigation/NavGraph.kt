@@ -11,6 +11,7 @@ import com.fnndev.pocky.ui.screens.bank.bank_add_edit.BankAddEditScreen
 import com.fnndev.pocky.ui.screens.login.login.LoginScreen
 import com.fnndev.pocky.ui.screens.transaction.transaction_add_edit.TransactionAddEditScreen
 import com.fnndev.pocky.ui.screens.transaction.transaction_list.TransactionScreen
+import com.fnndev.pocky.ui.screens.transaction.transaction_report.TransactionReportScreen
 
 @Composable
 fun SetupNavGraph(navController: NavHostController) {
@@ -61,6 +62,10 @@ fun SetupNavGraph(navController: NavHostController) {
             )
         ) {
             TransactionAddEditScreen(onSaveClick = { navController.popBackStack()})
+        }
+
+        composable(route = ScreenRoute.ReportTransactionScreen.route) {
+            TransactionReportScreen()
         }
     }
 }

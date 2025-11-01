@@ -18,9 +18,8 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContent {
             CustomPockyTheme {
-//                val navController = rememberNavController()
-//                SetupNavGraph(navController = navController)
-                TransactionReportScreen()
+                val navController = rememberNavController()
+                SetupNavGraph(navController = navController)
             }
         }
     }
