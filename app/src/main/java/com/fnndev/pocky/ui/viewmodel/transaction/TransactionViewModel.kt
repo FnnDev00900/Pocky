@@ -9,7 +9,8 @@ import com.fnndev.pocky.navigation.ScreenRoute
 import com.fnndev.pocky.ui.screens.transaction.transaction_list.TransactionEvent
 import com.fnndev.pocky.ui.screens.transaction.transaction_list.TransactionUiState
 import com.fnndev.pocky.ui.utils.UiEvent
-import com.fnndev.pocky.ui.utils.UiEvent.*
+import com.fnndev.pocky.ui.utils.UiEvent.Navigate
+import com.fnndev.pocky.ui.utils.UiEvent.ShowSnackBar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -86,10 +87,6 @@ class TransactionViewModel @Inject constructor(
                         deletedTransaction = null
                     }
                 }
-            }
-
-            TransactionEvent.OnReportClick -> {
-                sendUiEvent(Navigate(ScreenRoute.ReportTransactionScreen.route))
             }
         }
     }

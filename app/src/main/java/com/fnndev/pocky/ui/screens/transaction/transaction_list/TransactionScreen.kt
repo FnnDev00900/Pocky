@@ -21,7 +21,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -163,14 +162,6 @@ fun TransactionScreen(
                         )
                     )
                 }
-                OutlinedButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {
-                        viewModel.onEvent(TransactionEvent.OnReportClick)
-                    }
-                ) {
-                    Text(text = "گزارش گیری", fontFamily = VazirFont)
-                }
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -265,18 +256,30 @@ fun TransactionListItem(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("مبلغ:", fontFamily = VazirFont)
-                    Text(
-                        text = if (transaction.type == TransactionType.INCOME) {
-                            NumberFormat.getInstance()
-                                .format(transaction.amount) + "+ ريال"
-                        } else {
-                            NumberFormat.getInstance()
-                                .format(transaction.amount) + "- ريال"
-                        },
-                        color = if (transaction.type == TransactionType.INCOME) IncomeGreen else ExpenseRed,
-                        fontFamily = KoodakFont
-                    )
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Text("مبلغ:", fontFamily = VazirFont)
+                    }
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Text(
+                            text = NumberFormat.getInstance().format(transaction.amount),
+                            color = if (transaction.type == TransactionType.INCOME) IncomeGreen else ExpenseRed,
+                            fontFamily = KoodakFont
+                        )
+                        Text(
+                            text = if (transaction.type == TransactionType.INCOME) "+ ريال" else "- ريال",
+                            color = if (transaction.type == TransactionType.INCOME) IncomeGreen else ExpenseRed,
+                            fontFamily = VazirFont
+                        )
+                    }
+
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),

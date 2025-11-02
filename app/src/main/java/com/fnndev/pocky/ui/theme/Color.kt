@@ -24,3 +24,6 @@ val SurfaceWhite = Color(0xFFFFFFFF)     // کارت‌ها
 val TextPrimary = Color(0xFF212121)      // متن اصلی
 val TextSecondary = Color(0xFF757575)    // متن فرعی
 val BackgroundWhite = Color(0xFFFFFFFF)  // پس زمینه سفید
+
+val PastelGreen = Color(0xFF77DD77)
+val PastelRed = Color(0xFFFF6961)

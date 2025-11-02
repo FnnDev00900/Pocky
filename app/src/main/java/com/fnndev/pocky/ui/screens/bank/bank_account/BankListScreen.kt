@@ -219,7 +219,15 @@ fun BankListScreen(
                                         onClick = {
                                             isDropDonMenu = false
                                             showChangePasswordDialog = true
-                                        })
+                                        }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text("گزارشات", fontFamily = VazirFont) },
+                                        onClick = {
+                                            isDropDonMenu = false
+                                            viewModel.onEvent(event = BankAccountUiEvent.OnReportClick)
+                                        }
+                                    )
                                 }
                             }
                         }

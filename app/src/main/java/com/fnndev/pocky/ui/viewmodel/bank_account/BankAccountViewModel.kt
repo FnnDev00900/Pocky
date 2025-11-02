@@ -162,6 +162,10 @@ class BankAccountViewModel @Inject constructor(
                     }
                 }
             }
+
+            BankAccountUiEvent.OnReportClick -> {
+                sendUiEvent(Navigate(ScreenRoute.ReportTransactionScreen.route))
+            }
         }
     }
 

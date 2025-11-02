@@ -8,5 +8,4 @@ sealed class TransactionEvent {
     data class OnTransactionDeleteClicked(val transaction: Transaction) : TransactionEvent()
     data class OnSearchQueryChanged(val query: String) : TransactionEvent()
     object OnUndoDeleteClick : TransactionEvent()
-    object OnReportClick: TransactionEvent()
 }

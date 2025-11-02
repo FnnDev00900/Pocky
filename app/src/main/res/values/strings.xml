@@ -28,4 +28,5 @@
     <string name="str_confirm_password">تکرار رمز عبور</string>
     <string name="str_login">ورود به برنامه</string>
     <string name="str_register">ثبت نام</string>
+    <string name="str_report">گزارش</string>
 </resources>

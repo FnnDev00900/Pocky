@@ -61,10 +61,11 @@ fun SetupNavGraph(navController: NavHostController) {
                 }
             )
         ) {
-            TransactionAddEditScreen(onSaveClick = { navController.popBackStack()})
+            TransactionAddEditScreen(onSaveClick = { navController.popBackStack() })
         }
 
-        composable(route = ScreenRoute.ReportTransactionScreen.route) {
+        composable(route = ScreenRoute.ReportTransactionScreen.route)
+        {
             TransactionReportScreen()
         }
     }
