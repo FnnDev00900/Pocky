@@ -1,5 +1,8 @@
 package com.fnndev.pocky.ui.screens.transaction.transaction_report
 
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -39,23 +42,22 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.fnndev.pocky.data.local.models.Transaction
 import com.fnndev.pocky.data.local.models.TransactionType
-import com.fnndev.pocky.ui.screens.transaction.transaction_list.TransactionListItem
 import com.fnndev.pocky.ui.theme.BackgroundWhite
 import com.fnndev.pocky.ui.theme.KoodakFont
 import com.fnndev.pocky.ui.theme.PastelGreen
 import com.fnndev.pocky.ui.theme.PastelRed
 import com.fnndev.pocky.ui.theme.TextPrimary
-import com.fnndev.pocky.ui.theme.TextSecondary
 import com.fnndev.pocky.ui.theme.VazirFont
+import com.fnndev.pocky.ui.utils.PdfCreator
 import com.fnndev.pocky.ui.viewmodel.transaction.TransactionReportViewModel
 import com.razaghimahdi.compose_persian_date.bottom_sheet.DatePickerLinearModalBottomSheet
 import com.razaghimahdi.compose_persian_date.core.components.rememberDialogDatePicker
@@ -66,6 +68,8 @@ import java.text.NumberFormat
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionReportScreen(viewModel: TransactionReportViewModel = hiltViewModel()) {
+
+    val context = LocalContext.current
 
     val state = viewModel.state.collectAsState()
     val listFilterTransaction = state.value.transactionList
@@ -84,15 +88,36 @@ fun TransactionReportScreen(viewModel: TransactionReportViewModel = hiltViewMode
     var startDate: String? = null
     var endDate: String? = null
 
+    val createDocumentLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("application/pdf"),
+        onResult = { uri ->
+            uri?.let {
+                val pdfCreator = PdfCreator()
+                pdfCreator.generatePdf(
+                    context = context,
+                    listTransaction = listFilterTransaction,
+                    uri = it
+                )
+                Toast.makeText(
+                    context,
+                    "فایل با موفقیت ذخیره شد",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    )
+
     if (showDialogStartDate.value) {
         PersianLinearDatePickerDialog(
             rememberPersianDialogDatePicker,
             Modifier.fillMaxWidth(),
             onDismissRequest = { showDialogStartDate.value = false },
             onDateChanged = { year, month, day ->
-                val selectedDate = "$year/$month/$day"
+                val formattedMonth = month.toString().padStart(2, '0')
+                val formattedDay = day.toString().padStart(2, '0')
+                val selectedDate = "$year-$formattedMonth-$formattedDay"
                 startDate = selectedDate
-                viewModel.onEvent(TransactionReportEvent.OnStartDateChange(startDate = startDate!!))
+                viewModel.onEvent(TransactionReportEvent.OnStartDateChange(startDate = startDate))
             })
     }
 
@@ -102,9 +127,11 @@ fun TransactionReportScreen(viewModel: TransactionReportViewModel = hiltViewMode
             Modifier.fillMaxWidth(),
             onDismissRequest = { showDialogEndDate.value = false },
             onDateChanged = { year, month, day ->
-                val selectedDate = "$year/$month/$day"
+                val formattedMonth = month.toString().padStart(2, '0')
+                val formattedDay = day.toString().padStart(2, '0')
+                val selectedDate = "$year-$formattedMonth-$formattedDay"
                 endDate = selectedDate
-                viewModel.onEvent(TransactionReportEvent.OnEndDateChange(endDate = endDate!!))
+                viewModel.onEvent(TransactionReportEvent.OnEndDateChange(endDate = endDate))
             })
     }
 
@@ -263,7 +290,7 @@ fun TransactionReportScreen(viewModel: TransactionReportViewModel = hiltViewMode
                 }
                 Button(
                     onClick = {
-
+                        createDocumentLauncher.launch("transaction_report.pdf")
                     },
                     modifier = Modifier
                         .fillMaxWidth()

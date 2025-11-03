@@ -15,7 +15,7 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions")
     fun getAllTransactions(): Flow<List<Transaction>>
 
-    @Query("SELECT * FROM transactions WHERE bankAccountId = :bankAccountId ORDER BY date DESC")
+    @Query("SELECT * FROM transactions WHERE bankAccountId = :bankAccountId ORDER BY Date(date) DESC")
     fun getTransactionsByBankAccountId(bankAccountId: Int): Flow<List<Transaction>>
 
     @Query("SELECT * FROM transactions WHERE id = :id")
@@ -33,7 +33,7 @@ interface TransactionDao {
     @Query("DELETE FROM transactions WHERE bankAccountId = :bankAccountId")
     suspend fun deleteTransactionsByBankId(bankAccountId: Int)
 
-    @Query("SELECT * FROM transactions WHERE date BETWEEN :startDate AND :endDate And bankAccountId = :bankAccountId ORDER BY date DESC")
+    @Query("SELECT * FROM transactions WHERE Date(date) BETWEEN Date(:startDate) AND Date(:endDate) And bankAccountId = :bankAccountId ORDER BY Date(date) DESC")
     fun getTransactionsByDate(startDate: String,endDate: String,bankAccountId: Int): Flow<List<Transaction>>
 
 }

@@ -79,7 +79,9 @@ fun TransactionAddEditScreen(
             Modifier.fillMaxWidth(),
             onDismissRequest = { showDialog.value = false },
             onDateChanged = { year, month, day ->
-                val selectedDate = "$year/$month/$day"
+                val formattedMonth = month.toString().padStart(2, '0')
+                val formattedDay = day.toString().padStart(2, '0')
+                val selectedDate = "$year-$formattedMonth-$formattedDay"
                 viewModel.onEvent(TransactionAddEditEvent.OnDateChange(selectedDate))
                 focusManager.clearFocus()
             })
@@ -227,7 +229,7 @@ fun TransactionTypeSelector(
         TransactionType.entries.forEach { option ->
             Row(
                 modifier = Modifier
-                    .clickable(onClick = { onTypeSelected(option) })
+                    .clickable(onClick = { onTypeSelected(option) } )
                     .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center

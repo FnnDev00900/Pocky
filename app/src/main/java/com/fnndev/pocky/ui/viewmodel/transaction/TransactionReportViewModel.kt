@@ -1,11 +1,13 @@
 package com.fnndev.pocky.ui.viewmodel.transaction
 
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fnndev.pocky.data.local.repository.account.AccountRepository
 import com.fnndev.pocky.ui.screens.transaction.transaction_report.TransactionReportEvent
 import com.fnndev.pocky.ui.screens.transaction.transaction_report.TransactionReportState
+import com.fnndev.pocky.ui.utils.PdfCreator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,12 +18,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TransactionReportViewModel @Inject constructor(
-    private val repository: AccountRepository,
-    savedStateHandle: SavedStateHandle
+    private val repository: AccountRepository
 ) :
     ViewModel() {
     private val _state = MutableStateFlow(TransactionReportState())
     val state = _state.asStateFlow()
+
+
 
     init {
         getAllBanks()
