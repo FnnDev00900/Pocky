@@ -15,6 +15,9 @@ val VazirFont = FontFamily(
 val KoodakFont = FontFamily(
     Font(resId = R.font.koodak, FontWeight.Normal)
 )
+val NazaninFont = FontFamily(
+    Font(resId = R.font.nazanin, FontWeight.Normal)
+)
 
 // Set of Material typography styles to start with
 val Typography = Typography(
