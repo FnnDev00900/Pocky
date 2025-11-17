@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.fnndev.pocky.ui.screens.backup.BackupRestoreScreen
 import com.fnndev.pocky.ui.screens.bank.bank_account.BankListScreen
 import com.fnndev.pocky.ui.screens.bank.bank_add_edit.BankAddEditScreen
 import com.fnndev.pocky.ui.screens.login.login.LoginScreen
@@ -67,6 +68,9 @@ fun SetupNavGraph(navController: NavHostController) {
         composable(route = ScreenRoute.ReportTransactionScreen.route)
         {
             TransactionReportScreen()
+        }
+        composable(route = ScreenRoute.BackupRestoreScreen.route) {
+            BackupRestoreScreen()
         }
     }
 }

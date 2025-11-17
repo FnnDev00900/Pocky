@@ -166,6 +166,10 @@ class BankAccountViewModel @Inject constructor(
             BankAccountUiEvent.OnReportClick -> {
                 sendUiEvent(Navigate(ScreenRoute.ReportTransactionScreen.route))
             }
+
+            BankAccountUiEvent.OnBackupClick -> {
+                sendUiEvent(Navigate(ScreenRoute.BackupRestoreScreen.route))
+            }
         }
     }
 

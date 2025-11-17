@@ -12,6 +12,6 @@ sealed class BankAccountUiEvent {
     object ObserveAccounts : BankAccountUiEvent()
     object AddNewBankAccountClicked : BankAccountUiEvent()
     object OnUndoDeleteClick : BankAccountUiEvent()
-
-    object OnReportClick: BankAccountUiEvent()
+    object OnReportClick : BankAccountUiEvent()
+    object OnBackupClick : BankAccountUiEvent()
 }

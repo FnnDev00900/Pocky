@@ -228,6 +228,13 @@ fun BankListScreen(
                                             viewModel.onEvent(event = BankAccountUiEvent.OnReportClick)
                                         }
                                     )
+                                    DropdownMenuItem(
+                                        text = { Text("پشتیبان گیری", fontFamily = VazirFont) },
+                                        onClick = {
+                                            isDropDonMenu = false
+                                            viewModel.onEvent(event = BankAccountUiEvent.OnBackupClick)
+                                        }
+                                    )
                                 }
                             }
                         }

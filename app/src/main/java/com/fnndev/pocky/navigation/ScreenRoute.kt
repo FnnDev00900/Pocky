@@ -9,4 +9,6 @@ sealed class ScreenRoute(val route: String) {
     object AddEditTransactionScreen : ScreenRoute("add_edit_transaction_screen")
     object ReportTransactionScreen : ScreenRoute("report_transaction_screen")
 
+    object BackupRestoreScreen : ScreenRoute("backup_restore_screen")
+
 }
