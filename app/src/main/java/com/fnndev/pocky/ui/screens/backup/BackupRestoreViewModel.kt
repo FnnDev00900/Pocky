@@ -33,6 +33,9 @@ class BackupRestoreViewModel @Inject constructor(
 
     private fun backupDatabase() {
         viewModelScope.launch(Dispatchers.IO) {
+            if (db.isOpen) {
+                db.close()
+            }
             val success = backupManager.backup()
             if (success) {
                 _eventFlow.emit(UiEvent.ShowToast("پشتیبان گیری با موفقیت انجام شد"))

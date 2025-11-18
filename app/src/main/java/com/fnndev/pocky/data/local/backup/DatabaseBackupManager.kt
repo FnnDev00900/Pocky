@@ -1,11 +1,12 @@
 package com.fnndev.pocky.data.local.backup
 
 import android.content.Context
+import com.fnndev.pocky.data.local.database.AccountDatabase
 import java.io.File
 
 class DatabaseBackupManager(private val context: Context) {
 
-    private val dbFile = context.getDatabasePath("pocky_db.db")
+    private val dbFile = context.getDatabasePath(AccountDatabase.DATABASE_NAME)
     private val backupDir = File(context.filesDir, "backup")
     private val backupFileName = "Backup_Database.db"
     private val backupFile = File(backupDir, backupFileName)

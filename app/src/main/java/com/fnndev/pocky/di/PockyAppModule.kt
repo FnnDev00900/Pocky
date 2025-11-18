@@ -22,7 +22,7 @@ object PockyAppModule {
         return Room.databaseBuilder(
             app,
             AccountDatabase::class.java,
-            "pocky_db"
+            AccountDatabase.DATABASE_NAME
         ).build()
     }
 

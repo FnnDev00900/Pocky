@@ -18,4 +18,8 @@ abstract class AccountDatabase: RoomDatabase() {
     abstract val bankAccountDao: BankAccountDao
     abstract val transactionDao: TransactionDao
     abstract val loginDao: LoginDao
+
+    companion object {
+        const val DATABASE_NAME = "pocky_db"
+    }
 }
